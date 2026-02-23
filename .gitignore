@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment (Penting untuk Keamanan)
+.env
+**/.env
+!**/.env.example
+
+# Build outputs
+dist/
+build/
+**/dist/
+
+# Uploads & Media (Simpan lokal hanya untuk dev)
+BE/uploads/
+**/uploads/
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Dokumentasi & Config (PASTIKAN TIDAK DIABAIKAN)
+!README.md
+!.gitignore
+!package.json
+!package-lock.json
