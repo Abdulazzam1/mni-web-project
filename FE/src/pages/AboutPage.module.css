@@ -1,0 +1,169 @@
+.hero {
+  background: linear-gradient(135deg, var(--clr-navy) 0%, var(--clr-navy-lt) 100%);
+  padding: 8rem 0 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.overline {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--clr-amber);
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: var(--clr-white);
+  max-width: 600px;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.hero p {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.65);
+  max-width: 50ch;
+  position: relative;
+}
+
+/* About Grid */
+.aboutGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+.imgSide img {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  object-fit: cover;
+}
+
+.textSide h2 {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  color: var(--clr-navy);
+  margin-bottom: 1.25rem;
+}
+
+.textSide p {
+  font-size: 0.95rem;
+  color: var(--clr-text-lt);
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--clr-border);
+}
+
+.stat strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--clr-amber-dk);
+}
+
+.stat span {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--clr-muted);
+}
+
+/* Vision & Mission */
+.vmGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.vmCard {
+  background: var(--clr-white);
+  border-radius: var(--radius-md);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.vmIcon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.vmCard h3 {
+  font-size: 1.4rem;
+  color: var(--clr-navy);
+  margin-bottom: 1rem;
+}
+
+.vmCard p {
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--clr-text-lt);
+}
+
+.vmCard ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.vmCard ul li::before {
+  content: '→ ';
+  color: var(--clr-amber);
+  font-weight: 700;
+}
+
+.vmCard ul li {
+  font-size: 0.875rem;
+  color: var(--clr-text-lt);
+}
+
+/* Values */
+.valueCard {
+  background: var(--clr-off);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  border-left: 4px solid var(--clr-amber);
+}
+
+.valueCard h4 {
+  font-size: 1rem;
+  color: var(--clr-navy);
+  margin-bottom: 0.6rem;
+}
+
+.valueCard p {
+  font-size: 0.875rem;
+  color: var(--clr-text-lt);
+  line-height: 1.65;
+}
+
+@media (max-width: 1024px) {
+  .aboutGrid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .vmGrid { grid-template-columns: 1fr; }
+  .statsRow { grid-template-columns: repeat(2, 1fr); }
+}

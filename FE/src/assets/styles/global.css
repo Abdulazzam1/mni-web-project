@@ -1,0 +1,313 @@
+/* ═══════════════════════════════════════════════
+   MNI Design System — Industrial B2B Aesthetic
+   Fonts: Syne (display) + Inter (body)
+   Theme: Vibrant Red & Obsidian Black
+   ═══════════════════════════════════════════════ */
+
+:root {
+  /* Colors */
+  /* Turunan dari Biru Gelap diubah menjadi Hitam Obsidian yang elegan agar Merah lebih "keluar" */
+  --clr-navy:     #121418; /* Background gelap utama (Obsidian Black) */
+  --clr-navy-md:  #1E2128; /* Hitam medium untuk efek hover */
+  --clr-navy-lt:  #2D323C; /* Abu-abu gelap */
+  
+  /* Turunan dari Kuning/Amber diubah menjadi warna Merah Solid MNI */
+  --clr-amber:    #C8102E; /* Merah Utama (Vibrant Solid Red) */
+  --clr-amber-lt: #E61738; /* Merah lebih terang untuk hover tombol */
+  --clr-amber-dk: #9E0B22; /* Merah gelap */
+  
+  --clr-white:    #FFFFFF;
+  --clr-off:      #F8F9FA; /* Abu-abu super muda untuk background alternatif */
+  --clr-muted:    #8A9BB0;
+  --clr-border:   #E2E8F0;
+  --clr-text:     #1E293B; /* Teks utama tetap abu kehitaman agar nyaman dibaca */
+  --clr-text-lt:  #475569;
+
+  /* Typography */
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'Inter', sans-serif;
+
+  /* Spacing */
+  --container: min(90rem, 100% - 3rem);
+  --section-py: clamp(4rem, 8vw, 7rem);
+
+  /* Shadows */
+  --shadow-sm:  0 1px 3px rgba(18, 20, 24, 0.08);
+  --shadow-md:  0 4px 16px rgba(18, 20, 24, 0.12);
+  --shadow-lg:  0 12px 40px rgba(18, 20, 24, 0.18);
+  /* Bayangan aksen diubah memancarkan pendar merah elegan */
+  --shadow-amber: 0 8px 30px rgba(200, 16, 46, 0.3);
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  /* Transitions */
+  --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --dur: 0.3s;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--clr-text);
+  background: var(--clr-white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  background: none;
+}
+
+/* ── Container ─────────────────── */
+.container {
+  width: var(--container);
+  margin-inline: auto;
+}
+
+/* ── Section Base ──────────────── */
+.section {
+  padding-block: var(--section-py);
+}
+
+.section--dark {
+  background: var(--clr-navy);
+  color: var(--clr-white);
+}
+
+.section--off {
+  background: var(--clr-off);
+}
+
+/* ── Section Header ────────────── */
+.section-header {
+  text-align: center;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.section-header .overline {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--clr-amber);
+  margin-bottom: 0.75rem;
+}
+
+.section-header h2 {
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  color: var(--clr-navy);
+  margin-bottom: 1rem;
+}
+
+.section--dark .section-header h2 {
+  color: var(--clr-white);
+}
+
+.section-header p {
+  font-size: 1.05rem;
+  color: var(--clr-text-lt);
+  max-width: 54ch;
+  margin-inline: auto;
+}
+
+.section--dark .section-header p {
+  color: var(--clr-muted);
+}
+
+/* ── Buttons ───────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: all var(--dur) var(--ease);
+}
+
+.btn-primary {
+  background: var(--clr-amber);
+  /* Warna teks diubah menjadi putih agar sangat kontras di atas tombol merah */
+  color: var(--clr-white); 
+}
+
+.btn-primary:hover {
+  background: var(--clr-amber-lt);
+  box-shadow: var(--shadow-amber);
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  border: 2px solid var(--clr-navy);
+  color: var(--clr-navy);
+}
+
+.btn-outline:hover {
+  background: var(--clr-navy);
+  color: var(--clr-white);
+}
+
+.btn-outline-light {
+  border: 2px solid rgba(255,255,255,0.4);
+  color: var(--clr-white);
+}
+
+.btn-outline-light:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: var(--clr-white);
+}
+
+.btn-lg {
+  padding: 1rem 2.25rem;
+  font-size: 1rem;
+}
+
+/* ── Cards ─────────────────────── */
+.card {
+  background: var(--clr-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+/* ── Badge ─────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--clr-amber);
+  /* Teks putih agar terbaca jelas di atas latar merah */
+  color: var(--clr-white); 
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Form ──────────────────────── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--clr-text);
+}
+
+.form-control {
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--clr-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--clr-text);
+  background: var(--clr-white);
+  transition: border-color var(--dur) var(--ease);
+  outline: none;
+  width: 100%;
+}
+
+.form-control:focus {
+  border-color: var(--clr-amber);
+  /* Glow merah saat input form sedang diisi */
+  box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.15); 
+}
+
+.form-control.error {
+  border-color: #E53E3E;
+}
+
+.error-msg {
+  font-size: 0.8rem;
+  color: #E53E3E;
+}
+
+/* ── Grid utilities ────────────── */
+.grid-2 { display: grid; gap: 1.5rem; grid-template-columns: repeat(2, 1fr); }
+.grid-3 { display: grid; gap: 1.5rem; grid-template-columns: repeat(3, 1fr); }
+.grid-4 { display: grid; gap: 1.5rem; grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+}
+
+/* ── Loader ────────────────────── */
+.spinner {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 3px solid var(--clr-border);
+  border-top-color: var(--clr-amber); /* Spinner loading berwarna merah */
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: 3rem auto;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Page transitions ──────────── */
+.page-enter {
+  animation: fadeUp 0.4s var(--ease) both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Scrollbar ─────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--clr-off); }
+::-webkit-scrollbar-thumb { background: var(--clr-amber); border-radius: 3px; }

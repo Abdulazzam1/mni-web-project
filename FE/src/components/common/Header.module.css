@@ -1,0 +1,140 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: background var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  background: transparent;
+  padding-block: 1.25rem;
+}
+
+.header.scrolled {
+  background: rgba(10, 22, 40, 0.97);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.25);
+  padding-block: 0.875rem;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Styling khusus untuk gambar logo agar ukurannya pas di Navbar */
+.logoImage {
+  height: 45px; 
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* Nav */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.navLink {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.8);
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-sm);
+  transition: color var(--dur), background var(--dur);
+  letter-spacing: 0.02em;
+}
+
+.navLink:hover {
+  color: var(--clr-white);
+  background: rgba(255,255,255,0.08);
+}
+
+.navLink.active {
+  color: var(--clr-amber);
+}
+
+/* CTA */
+.cta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.phoneLink {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.7);
+  transition: color var(--dur);
+}
+
+.phoneLink:hover { color: var(--clr-amber); }
+
+/* Mobile */
+.toggle {
+  display: none;
+  color: var(--clr-white);
+  padding: 0.35rem;
+}
+
+.mobileMenu {
+  display: flex;
+  flex-direction: column;
+  background: var(--clr-navy);
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.mobileLink {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: rgba(255,255,255,0.8);
+  padding: 0.875rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-weight: 500;
+}
+
+.mobileLink.active { color: var(--clr-amber); }
+.mobileBtn { margin-top: 1.25rem; justify-content: center; }
+
+@media (max-width: 1024px) {
+  .nav, .cta { display: none; }
+  .toggle { display: block; }
+  .inner { justify-content: space-between; }
+}
+
+/* Styling khusus untuk gambar logo agar ukurannya pas di Navbar */
+.logoImage {
+  height: 50px; /* Sedikit diperbesar agar lebih proporsional dengan padding baru */
+  width: auto;
+  display: block;
+  object-fit: contain;
+  
+  /* PENAMBAHAN BARU UNTUK KONTRAS */
+  background-color: rgba(255, 255, 255, 0.95); /* Latar belakang putih semi-transparan halus */
+  padding: 0.4rem 0.75rem; /* Memberi ruang napas di sekitar logo */
+  border-radius: var(--radius-sm); /* Sudut membulat agar senada dengan desain tombol */
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15); /* Bayangan halus agar logo terlihat menonjol/3D */
+  transition: all var(--dur) var(--ease);
+}
+
+/* Efek tambahan saat kursor diarahkan ke logo (opsional, agar lebih interaktif) */
+.logo:hover .logoImage {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(255, 184, 0, 0.3); /* Glow kuning halus saat di-hover */
+}

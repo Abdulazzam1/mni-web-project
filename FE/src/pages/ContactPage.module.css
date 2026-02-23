@@ -1,0 +1,136 @@
+.hero {
+  background: linear-gradient(135deg, var(--clr-navy) 0%, var(--clr-navy-lt) 100%);
+  padding: 8rem 0 4rem;
+}
+
+.overline {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--clr-amber);
+  margin-bottom: 1rem;
+}
+
+.hero h1 { font-size: clamp(2rem, 4vw, 3rem); color: var(--clr-white); margin-bottom: 0.75rem; }
+.hero p { color: rgba(255,255,255,0.65); }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+/* Info Column */
+.infoCol h2 {
+  font-size: 1.6rem;
+  color: var(--clr-navy);
+  margin-bottom: 2rem;
+}
+
+.contactItems {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+.contactItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.iconBox {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  background: rgba(232,160,32,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--clr-amber-dk);
+  flex-shrink: 0;
+}
+
+.contactItem > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--clr-muted);
+}
+
+.contactItem a, .contactItem span:last-child {
+  font-size: 0.9rem;
+  color: var(--clr-navy);
+  font-weight: 500;
+  transition: color var(--dur);
+}
+
+.contactItem a:hover { color: var(--clr-amber-dk); }
+
+/* Simple form */
+.contactForm {
+  background: var(--clr-off);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+}
+
+.contactForm h3 {
+  font-size: 1.1rem;
+  color: var(--clr-navy);
+  margin-bottom: 1.25rem;
+}
+
+.contactForm form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.successAlert {
+  background: #F0FFF4;
+  border: 1px solid #9AE6B4;
+  color: #276749;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.errorAlert {
+  background: #FFF5F5;
+  border: 1px solid #FEB2B2;
+  color: #C53030;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+/* RFQ Column */
+.rfqCol {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.mapWrap {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--clr-border);
+}
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; gap: 2.5rem; }
+}

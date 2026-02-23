@@ -1,0 +1,136 @@
+.footer {
+  background: var(--clr-navy);
+  color: rgba(255,255,255,0.75);
+  padding-top: clamp(3.5rem, 7vw, 5.5rem);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 3rem;
+  padding-bottom: 3rem;
+}
+
+/* Brand & Logo */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  text-decoration: none;
+}
+
+/* Styling Wadah Gambar Logo untuk mengatasi background gelap */
+.logoImage {
+  height: 48px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  background-color: rgba(255, 255, 255, 0.95); /* Bantalan putih transparan yang elegan */
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: transform var(--dur) var(--ease);
+}
+
+.logoImage:hover {
+  transform: translateY(-2px);
+}
+
+.tagline {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  max-width: 30ch;
+}
+
+.socials {
+  display: flex;
+  gap: 0.875rem;
+}
+
+.socials a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 6px;
+  color: rgba(255,255,255,0.7);
+  transition: background var(--dur), color var(--dur);
+}
+
+.socials a:hover {
+  background: var(--clr-amber);
+  color: var(--clr-navy);
+}
+
+/* Columns */
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.colTitle {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--clr-amber);
+  margin-bottom: 0.5rem;
+}
+
+.link {
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.65);
+  transition: color var(--dur);
+}
+
+.link:hover { color: var(--clr-white); }
+
+/* Contact */
+.contact {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.65);
+  transition: color var(--dur);
+  text-decoration: none;
+}
+
+.contact:hover { color: var(--clr-amber); }
+
+.contact svg { flex-shrink: 0; margin-top: 2px; }
+
+.contactLabel {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--clr-muted);
+}
+
+/* Bottom bar */
+.bottom {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-block: 1.25rem;
+}
+
+.bottom p {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+}
+
+@media (max-width: 1024px) {
+  .grid { grid-template-columns: 1fr 1fr; }
+  .brand { grid-column: 1 / -1; }
+}
+
+@media (max-width: 640px) {
+  .grid { grid-template-columns: 1fr; }
+}

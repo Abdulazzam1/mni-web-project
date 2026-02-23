@@ -1,0 +1,86 @@
+.hero {
+  background: linear-gradient(135deg, var(--clr-navy) 0%, var(--clr-navy-lt) 100%);
+  padding: 8rem 0 4rem;
+}
+
+.overline {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--clr-amber);
+  margin-bottom: 1rem;
+}
+
+.hero h1 { font-size: clamp(2rem, 4vw, 3rem); color: var(--clr-white); margin-bottom: 0.75rem; }
+.hero p { color: rgba(255,255,255,0.65); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.card {
+  background: var(--clr-white);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow var(--dur), transform var(--dur);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.cardHeader {
+  background: linear-gradient(135deg, var(--clr-navy), var(--clr-navy-lt));
+  padding: 1.75rem 2rem;
+}
+
+.cardHeader h3 {
+  font-size: 1.2rem;
+  color: var(--clr-white);
+}
+
+.cardBody {
+  padding: 2rem;
+  flex: 1;
+}
+
+.desc {
+  font-size: 0.9rem;
+  color: var(--clr-text-lt);
+  line-height: 1.75;
+  margin-bottom: 1.25rem;
+}
+
+.scope h4 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--clr-amber-dk);
+  margin-bottom: 0.5rem;
+}
+
+.scope p {
+  font-size: 0.875rem;
+  color: var(--clr-text-lt);
+  line-height: 1.65;
+}
+
+.cardFooter {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--clr-border);
+}
+
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+}
