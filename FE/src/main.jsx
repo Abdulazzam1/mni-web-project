@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom'; // <-- 1. Ubah di sini
 import { HelmetProvider } from 'react-helmet-async';
 import App from './App';
 import '@/assets/styles/global.css';
@@ -8,9 +8,9 @@ import '@/assets/styles/global.css';
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <HelmetProvider>
-      <BrowserRouter>
+      <HashRouter> {/* <-- 2. Ubah di sini */}
         <App />
-      </BrowserRouter>
+      </HashRouter>
     </HelmetProvider>
   </React.StrictMode>
 );
