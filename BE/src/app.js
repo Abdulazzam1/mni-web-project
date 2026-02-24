@@ -14,6 +14,11 @@ const contactRoutes = require('./routes/contact');
 const rfqRoutes = require('./routes/rfq');
 const testimonialRoutes = require('./routes/testimonials');
 
+// ─── IMPORT RUTE ADMIN & AUTH BARU ───────────────────────────
+const authRoutes = require('./routes/auth');
+const adminRoutes = require('./routes/admin/index');
+// ─────────────────────────────────────────────────────────────
+
 const app = express();
 
 // ─── Security & Parsing ──────────────────────────────────────
@@ -21,11 +26,28 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
 
+// ─── CORS UPDATE UNTUK CMS (5174) & FE (5173) ────────────────
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      'http://localhost:5173', 
+      'http://localhost:5174'
+    ];
+    if (process.env.CORS_ORIGIN) {
+      allowedOrigins.push(process.env.CORS_ORIGIN);
+    }
+    
+    // Izinkan jika origin terdaftar, atau jika tidak ada origin (misal dari Postman/Server-to-Server)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+// ─────────────────────────────────────────────────────────────
 
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
@@ -58,6 +80,11 @@ app.use('/api/news', newsRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/contact', contactLimiter, contactRoutes);
 app.use('/api/rfq', contactLimiter, rfqRoutes);
+
+// ─── MOUNT RUTE ADMIN & AUTH BARU ────────────────────────────
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
+// ─────────────────────────────────────────────────────────────
 
 // ─── Health Check ─────────────────────────────────────────────
 app.get('/api/health', (req, res) => {

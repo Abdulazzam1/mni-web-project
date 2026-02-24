@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { login as loginSvc } from '@/services/authService';
+import api from '@/services/api'; // <-- KOREKSI 1: Import file api
 
 const AuthContext = createContext(null);
 
@@ -20,7 +20,11 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(async ({ email, password }) => {
     const res = await api.post('/auth/login', { email, password });
-    const { token, user: u } = res.data;
+    
+    // <-- KOREKSI 2: Menyesuaikan dengan format response sendSuccess MNI
+    const payload = res.data.data || res.data; 
+    const { token, user: u } = payload;
+
     localStorage.setItem('mni_token', token);
     localStorage.setItem('mni_user', JSON.stringify(u));
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
