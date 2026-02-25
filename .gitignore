@@ -31,3 +31,8 @@ Thumbs.db
 !.gitignore
 !package.json
 !package-lock.json
+
+# Playwright & E2E Testing (Abaikan Rapor dan File Dummy)
+**/playwright-report/
+**/test-results/
+**/test-image.jpg
