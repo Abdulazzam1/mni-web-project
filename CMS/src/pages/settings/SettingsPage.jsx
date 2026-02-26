@@ -145,6 +145,11 @@ export default function SettingsPage() {
                 <label className="block text-sm font-medium mb-1">No. Telp Sales</label>
                 <input type="text" className="form-control" value={formData.contact_sales} onChange={(e) => setFormData({...formData, contact_sales: e.target.value})} />
               </div>
+              {/* FITUR BARU: Input untuk Nomor Telp Service agar bisa dikelola via CMS */}
+              <div>
+                <label className="block text-sm font-medium mb-1">No. Telp Service</label>
+                <input type="text" className="form-control" value={formData.contact_service} onChange={(e) => setFormData({...formData, contact_service: e.target.value})} />
+              </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Email</label>
                 <input type="email" className="form-control" value={formData.contact_email} onChange={(e) => setFormData({...formData, contact_email: e.target.value})} />
