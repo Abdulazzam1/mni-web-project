@@ -19,8 +19,24 @@ export default function ContactPage() {
     setLoading(true);
     setStatus(null);
     try {
+      // 1. Proses Bisnis Utama: Simpan ke Database
       await submitContact(data);
       setStatus('success');
+      
+      // 2. FITUR BARU: Generate URL WhatsApp Otomatis
+      // Menyusun pesan dinamis berdasarkan input user
+      const waMessage = `Halo tim Sales PT MNI, saya menghubungi via formulir website:\n\n*Nama:* ${data.name}\n*Email:* ${data.email}\n*Telepon:* ${data.phone || '-'}\n*Subjek:* ${data.subject || '-'}\n*Pesan:*\n${data.message}`;
+      
+      // Encode pesan agar karakter khusus & enter terbaca dengan benar di URL WhatsApp
+      const encodedMessage = encodeURIComponent(waMessage);
+      
+      // Buat URL yang mengarah ke nomor sales
+      const waUrl = `https://wa.me/${settings.contact_sales}?text=${encodedMessage}`;
+      
+      // Buka aplikasi WhatsApp / WhatsApp Web di tab baru
+      window.open(waUrl, '_blank');
+
+      // 3. Reset form setelah proses selesai
       reset();
     } catch {
       setStatus('error');
@@ -114,7 +130,7 @@ export default function ContactPage() {
               <div className={styles.contactForm}>
                 <h3>Kirim Pesan</h3>
                 {status === 'success' && (
-                  <div className={styles.successAlert}>✅ Pesan berhasil dikirim!</div>
+                  <div className={styles.successAlert}>✅ Pesan berhasil dikirim! Silakan lanjutkan chat di WhatsApp.</div>
                 )}
                 {status === 'error' && (
                   <div className={styles.errorAlert}>❌ Gagal mengirim, coba lagi.</div>
