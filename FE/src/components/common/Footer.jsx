@@ -34,7 +34,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Quick Links */}
+        {/* Quick Links - Menggunakan pembungkus .links yang sudah diperbaiki di CSS */}
         <div className={styles.col}>
           <h4 className={styles.colTitle}>Tautan</h4>
           <div className={styles.links}>
@@ -46,15 +46,17 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Layanan Populer */}
+        {/* Layanan Populer - Diseragamkan menggunakan pembungkus .links */}
         <div className={styles.col}>
           <h4 className={styles.colTitle}>Layanan</h4>
-          <Link to="/layanan" className={styles.link}>Pengadaan Unit AC</Link>
-          <Link to="/layanan" className={styles.link}>Instalasi AC</Link>
-          <Link to="/layanan" className={styles.link}>Maintenance Genset</Link>
+          <div className={styles.links}>
+            <Link to="/layanan" className={styles.link}>Pengadaan Unit AC</Link>
+            <Link to="/layanan" className={styles.link}>Instalasi AC</Link>
+            <Link to="/layanan" className={styles.link}>Maintenance Genset</Link>
+          </div>
         </div>
 
-        {/* Kontak - Diperbarui ke WhatsApp */}
+        {/* Kontak */}
         <div className={styles.col}>
           <h4 className={styles.colTitle}>Kontak</h4>
           
