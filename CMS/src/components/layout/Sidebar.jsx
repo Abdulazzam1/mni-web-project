@@ -1,8 +1,8 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Package, Wrench, Image, Newspaper,
-  MessageSquare, FileText, Star, ChevronRight,
-} from 'lucide-react';
+  MessageSquare, FileText, Star, ChevronRight, MonitorPlay
+} from 'lucide-react'; // <-- TAMBAHAN: Import icon MonitorPlay untuk Banner
 
 const NAV = [
   {
@@ -14,11 +14,14 @@ const NAV = [
   {
     group: 'Konten',
     items: [
+      // ─── TAMBAHAN BARU: Menu Banner ──────────────────────────
+      { path: '/banner',     label: 'Banner & Promo', icon: MonitorPlay },
+      // ─────────────────────────────────────────────────────────
       { path: '/produk',     label: 'Produk',       icon: Package },
-      { path: '/layanan',    label: 'Layanan',       icon: Wrench },
-      { path: '/portfolio',  label: 'Portfolio',     icon: Image },
+      { path: '/layanan',    label: 'Layanan',      icon: Wrench },
+      { path: '/portfolio',  label: 'Portfolio',    icon: Image },
       { path: '/berita',     label: 'Berita & Info', icon: Newspaper },
-      { path: '/testimoni',  label: 'Testimoni',     icon: Star },
+      { path: '/testimoni',  label: 'Testimoni',    icon: Star },
     ],
   },
   {
@@ -71,7 +74,7 @@ export default function Sidebar({ unread = {}, collapsed, onToggle }) {
                   <NavLink
                     key={path}
                     to={path}
-                    className={`sidebar-item ${isActive ? 'sidebar-item-active' : 'sidebar-item-inactive'}`}
+                    className={`sidebar-item ${isActive ? 'sidebar-item-active' : 'sidebar-item-inactive'} relative flex items-center gap-3 px-3 py-2 rounded-md transition-colors`}
                     title={collapsed ? label : undefined}
                   >
                     <Icon size={17} className="shrink-0" />
@@ -101,7 +104,7 @@ export default function Sidebar({ unread = {}, collapsed, onToggle }) {
       {/* Footer */}
       <div className="border-t border-navy-800 px-3 py-3 shrink-0">
         <div
-          className={`sidebar-item sidebar-item-inactive cursor-pointer`}
+          className={`sidebar-item sidebar-item-inactive cursor-pointer flex items-center gap-3 px-3 py-2 rounded-md transition-colors`}
           onClick={onToggle}
           title={collapsed ? 'Perluas sidebar' : 'Ciutkan sidebar'}
         >

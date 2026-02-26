@@ -1,0 +1,118 @@
+/* =========================================
+   BannerSlider.css
+   ========================================= */
+
+.banner-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: #f3f4f6; /* Warna abu-abu terang sebagai background fallback */
+  /* Margin atas 80px agar banner terdorong ke bawah & tidak tertutup Navbar. 
+     Silakan sesuaikan angkanya dengan tinggi asli Navbar Anda */
+  margin-top: 80px; 
+}
+
+/* ─── PENGATURAN PROPORSI (ASPECT RATIO) AGAR TIDAK TERPOTONG ─── */
+/* Proporsi HP */
+.banner-aspect { aspect-ratio: 16 / 9; } 
+/* Proporsi Tablet */
+@media (min-width: 640px) { .banner-aspect { aspect-ratio: 2 / 1; } }
+/* Proporsi Laptop/Desktop (Sangat Lebar seperti spanduk asli) */
+@media (min-width: 1024px) { .banner-aspect { aspect-ratio: 3.5 / 1; } } 
+
+/* ─── ANIMASI SLIDE & GAMBAR ─── */
+.banner-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  z-index: 0;
+  transform: scale(1.03); /* Sedikit di-zoom sebelum muncul */
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+}
+
+.banner-slide.active {
+  opacity: 1;
+  z-index: 10;
+  transform: scale(1);
+}
+
+.banner-img {
+  width: 100%;
+  height: 100%;
+  /* object-cover membuat gambar penuh. Karena aspect-ratio di atas sudah lebar, 
+     gambar tidak akan terpotong parah lagi */
+  object-fit: cover; 
+  object-position: center;
+}
+
+/* ─── PELINDUNG TEKS & INDIKATOR (GRADIENT) ─── */
+.banner-gradient-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+  z-index: 20;
+  pointer-events: none;
+}
+
+/* ─── TOMBOL PANAH (MODERN & TERSEMBUNYI SAAT TIDAK DI-HOVER) ─── */
+.banner-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+  opacity: 0; /* Sembunyikan panah secara default */
+}
+
+.banner-wrapper:hover .banner-nav-btn {
+  opacity: 1; /* Tampilkan panah hanya saat mouse masuk ke area banner */
+}
+
+.banner-nav-btn:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #111827;
+}
+
+.banner-btn-left { left: 20px; }
+.banner-btn-right { right: 20px; }
+
+/* ─── TITIK INDIKATOR (DOTS) ─── */
+.banner-dots-wrapper {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  gap: 8px;
+}
+
+.banner-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: none;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  padding: 0;
+}
+
+.banner-dot:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.banner-dot.active {
+  width: 32px; /* Melebar saat aktif */
+  background-color: #dc2626; /* Warna merah MNI */
+}

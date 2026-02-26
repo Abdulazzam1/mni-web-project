@@ -18,6 +18,9 @@ import PortfolioPage       from '@/pages/portfolio/PortfolioPage';
 import PortfolioFormPage   from '@/pages/portfolio/PortfolioFormPage';
 import NewsPage            from '@/pages/news/NewsPage';
 import NewsFormPage        from '@/pages/news/NewsFormPage';
+// ─── IMPORT BARU: Banner ────────────────────────────────────
+import BannerPage          from '@/pages/banner/Banner';
+// ────────────────────────────────────────────────────────────
 import TestimonialsPage    from '@/pages/testimonials/TestimonialsPage';
 import RFQPage             from '@/pages/rfq/RFQPage';
 import ContactPage         from '@/pages/contact/ContactPage';
@@ -99,6 +102,10 @@ export default function App() {
         <Route path="/berita"             element={<NewsPage />} />
         <Route path="/berita/baru"        element={<NewsFormPage />} />
         <Route path="/berita/:id/edit"    element={<NewsFormPage />} />
+
+        {/* ── RUTE BARU: Banner ────────────────────────────── */}
+        <Route path="/banner"             element={<BannerPage />} />
+        {/* ─────────────────────────────────────────────────── */}
 
         {/* Others */}
         <Route path="/testimoni"          element={<TestimonialsPage />} />

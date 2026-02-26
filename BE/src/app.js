@@ -14,6 +14,10 @@ const contactRoutes = require('./routes/contact');
 const rfqRoutes = require('./routes/rfq');
 const testimonialRoutes = require('./routes/testimonials');
 
+// ─── IMPORT RUTE BARU (BANNER) ───────────────────────────────
+const bannerRoutes = require('./routes/banner');
+// ─────────────────────────────────────────────────────────────
+
 // ─── IMPORT RUTE ADMIN & AUTH BARU ───────────────────────────
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin/index');
@@ -23,6 +27,7 @@ const app = express();
 
 // ─── Security & Parsing ──────────────────────────────────────
 app.use(helmet({
+  // Penting: Izinkan resource agar gambar bisa tampil di frontend (cross-origin)
   crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
 
@@ -53,8 +58,15 @@ app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// ─── Static Files (uploaded images) ─────────────────────────
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// ─── FIX AKAR MASALAH: Static Files (Mengarahkan langsung ke sub-folder misc) ───
+// Karena file fisik berada di BE/uploads/misc, kita arahkan path absolut ke sana.
+// Dengan ini, URL http://localhost:5001/uploads/gambar.jpg akan mengambil file dari folder misc.
+const uploadsMiscPath = path.resolve(__dirname, '..', 'uploads', 'misc');
+app.use('/uploads', express.static(uploadsMiscPath));
+
+// Log untuk validasi di terminal saat server dijalankan
+console.log('Static images (Banners) served from:', uploadsMiscPath);
+// ─────────────────────────────────────────────────────────────
 
 // ─── Rate Limiting ────────────────────────────────────────────
 const apiLimiter = rateLimit({
@@ -78,6 +90,11 @@ app.use('/api/services', serviceRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/testimonials', testimonialRoutes);
+
+// ─── MOUNT RUTE BANNER (Masuk ke dalam apiLimiter) ───────────
+app.use('/api/banner', bannerRoutes);
+// ─────────────────────────────────────────────────────────────
+
 app.use('/api/contact', contactLimiter, contactRoutes);
 app.use('/api/rfq', contactLimiter, rfqRoutes);
 

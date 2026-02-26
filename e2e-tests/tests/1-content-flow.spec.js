@@ -19,7 +19,11 @@ test.describe('Audit Fungsionalitas MNI: CMS ke FE', () => {
 
     // 2. NAVIGASI KE PRODUK (Mendukung HashRouter) 
     await cmsPage.getByRole('link', { name: /produk/i }).first().click();
-    await cmsPage.getByRole('button', { name: /tambah/i }).click();
+    
+    // ─── PERBAIKAN ERROR STRICT MODE DI SINI ───
+    // Menggunakan .first() agar Playwright tidak bingung saat ada 2 tombol "Tambah"
+    await cmsPage.getByRole('button', { name: /tambah/i }).first().click();
+    // ───────────────────────────────────────────
 
     // 3. PENGISIAN FORM (Targeting Spesifik) 
     const productName = `[TEST] Produk MNI ${Date.now()}`;
