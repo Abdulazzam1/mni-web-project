@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Menu, X, Phone } from 'lucide-react';
-import { NAV_LINKS, COMPANY } from '@/utils/constants';
-import logoMNI from '../../assets/cropped-mni-1-1.png'; // Import logo gambar di sini
+import { NAV_LINKS } from '@/utils/constants'; // Hanya import NAV_LINKS
+import { useSettings } from '@/contexts/SettingsContext'; // Import untuk nomor otomatis
+import logoMNI from '../../assets/cropped-mni-1-1.png';
 import styles from './Header.module.css';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
+  
+  // Mengambil data pengaturan dinamis
+  const { settings } = useSettings();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -16,18 +20,15 @@ export default function Header() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Close mobile menu on route change
   useEffect(() => { setOpen(false); }, [pathname]);
 
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
       <div className={`container ${styles.inner}`}>
-        {/* Logo Menggunakan Gambar */}
         <Link to="/" className={styles.logo}>
           <img src={logoMNI} alt="Logo PT Mitra Niaga Indonesia" className={styles.logoImage} />
         </Link>
 
-        {/* Desktop Nav */}
         <nav className={styles.nav}>
           {NAV_LINKS.map((link) => (
             <NavLink
@@ -43,18 +44,17 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* CTA */}
         <div className={styles.cta}>
-          <a href={`tel:${COMPANY.phone.sales}`} className={styles.phoneLink}>
+          {/* NOMOR TELP OTOMATIS DARI DATABASE */}
+          <a href={`tel:${settings?.contact_sales}`} className={styles.phoneLink}>
             <Phone size={14} />
-            {COMPANY.phone.sales}
+            {settings?.contact_sales || '(021) 1234-5678'}
           </a>
           <Link to="/kontak" className="btn btn-primary">
             Request Penawaran
           </Link>
         </div>
 
-        {/* Mobile Toggle */}
         <button
           className={styles.toggle}
           onClick={() => setOpen(!open)}
@@ -64,7 +64,6 @@ export default function Header() {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {open && (
         <div className={styles.mobileMenu}>
           {NAV_LINKS.map((link) => (

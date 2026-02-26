@@ -25,6 +25,10 @@ import TestimonialsPage    from '@/pages/testimonials/TestimonialsPage';
 import RFQPage             from '@/pages/rfq/RFQPage';
 import ContactPage         from '@/pages/contact/ContactPage';
 
+// ─── IMPORT BARU: Settings (Web Profile) ────────────────────
+import SettingsPage        from '@/pages/settings/SettingsPage';
+// ────────────────────────────────────────────────────────────
+
 // ─── Guard: butuh login ─────────────────────────────────────
 function RequireAuth({ children }) {
   const { isAuthenticated, loading } = useAuth();
@@ -111,6 +115,10 @@ export default function App() {
         <Route path="/testimoni"          element={<TestimonialsPage />} />
         <Route path="/rfq"                element={<RFQPage />} />
         <Route path="/pesan"              element={<ContactPage />} />
+
+        {/* ── RUTE BARU: Settings (Web Profile) ─────────────── */}
+        <Route path="/settings"           element={<SettingsPage />} />
+        {/* ─────────────────────────────────────────────────── */}
 
         {/* 404 inside admin */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

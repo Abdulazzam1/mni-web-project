@@ -1,4 +1,5 @@
 import SEOMeta from '@/components/common/SEOMeta';
+import { useSettings } from '@/contexts/SettingsContext'; // <-- IMPORT CONTEXT
 import styles from './AboutPage.module.css';
 
 const values = [
@@ -9,6 +10,13 @@ const values = [
 ];
 
 export default function AboutPage() {
+  const { settings, loadingSettings } = useSettings();
+
+  // Tampilkan loading jika data dari database belum turun
+  if (loadingSettings) return <div className="spinner" style={{ marginTop: '10rem' }} />;
+  // Jika gagal ambil data, tampilkan fallback kosong agar tidak crash
+  if (!settings) return null; 
+
   return (
     <>
       <SEOMeta
@@ -34,25 +42,21 @@ export default function AboutPage() {
             </div>
             <div className={styles.textSide}>
               <span className="overline" style={{ color: 'var(--clr-amber)' }}>Siapa Kami</span>
-              <h2>Principal Distributor Masagi & General Supplier</h2>
-              <p>
-                PT. Mitra Niaga Indonesia adalah perusahaan yang bergerak di bidang distribusi
-                produk dan layanan teknis untuk kebutuhan gedung, khususnya pada sektor
-                Mekanikal dan Elektrikal. Kami adalah Principal Distributor resmi Masagi
-                sekaligus General Supplier yang menyediakan layanan terpadu.
-              </p>
-              <p>
-                Produk yang kami sediakan meliputi sistem Air Conditioning (VAC), Lampu LED,
-                dan Genset, didukung oleh layanan Preventive Maintenance & Perbaikan yang
-                ditangani oleh teknisi berpengalaman dan bersertifikat.
-              </p>
+              
+              {/* DINAMIS: Judul About */}
+              <h2>{settings.about_title}</h2>
+              
+              {/* DINAMIS: Deskripsi dipecah berdasarkan simbol || yang kita buat di database */}
+              {settings.about_description?.split('||').map((paragraph, idx) => (
+                <p key={idx}>{paragraph}</p>
+              ))}
 
               <div className={styles.statsRow}>
                 {[
-                  { num: '500+', label: 'Proyek' },
-                  { num: '200+', label: 'Klien' },
-                  { num: '15+', label: 'Tahun' },
-                  { num: '24/7', label: 'Support' },
+                  { num: settings.stats_projects, label: 'Proyek' },
+                  { num: settings.stats_clients, label: 'Klien' },
+                  { num: settings.stats_years, label: 'Tahun' },
+                  { num: settings.stats_support, label: 'Support' },
                 ].map((s) => (
                   <div key={s.label} className={styles.stat}>
                     <strong>{s.num}</strong>
@@ -72,21 +76,17 @@ export default function AboutPage() {
             <div className={styles.vmCard}>
               <div className={styles.vmIcon}>🎯</div>
               <h3>Visi</h3>
-              <p>
-                Menjadi perusahaan distribusi dan layanan teknis VAC, Mekanikal, dan Elektrikal
-                terpercaya dan terdepan di Indonesia, dengan mengutamakan kualitas produk
-                dan kepuasan pelanggan.
-              </p>
+              {/* DINAMIS: Visi */}
+              <p>{settings.vision}</p>
             </div>
             <div className={styles.vmCard}>
               <div className={styles.vmIcon}>🚀</div>
               <h3>Misi</h3>
               <ul>
-                <li>Menyediakan produk berkualitas tinggi dengan harga kompetitif</li>
-                <li>Memberikan layanan purna jual terbaik dan cepat</li>
-                <li>Membangun kemitraan jangka panjang berbasis kepercayaan</li>
-                <li>Terus berinovasi dalam solusi teknis untuk pelanggan</li>
-                <li>Mengembangkan SDM yang kompeten dan berintegritas</li>
+                {/* DINAMIS: Misi dipecah menjadi list <li> */}
+                {settings.mission?.split('||').map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
               </ul>
             </div>
           </div>

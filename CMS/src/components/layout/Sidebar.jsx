@@ -1,8 +1,9 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Package, Wrench, Image, Newspaper,
-  MessageSquare, FileText, Star, ChevronRight, MonitorPlay
-} from 'lucide-react'; // <-- TAMBAHAN: Import icon MonitorPlay untuk Banner
+  MessageSquare, FileText, Star, ChevronRight, MonitorPlay,
+  Settings // <-- TAMBAHAN: Import icon Settings
+} from 'lucide-react';
 
 const NAV = [
   {
@@ -14,9 +15,7 @@ const NAV = [
   {
     group: 'Konten',
     items: [
-      // ─── TAMBAHAN BARU: Menu Banner ──────────────────────────
       { path: '/banner',     label: 'Banner & Promo', icon: MonitorPlay },
-      // ─────────────────────────────────────────────────────────
       { path: '/produk',     label: 'Produk',       icon: Package },
       { path: '/layanan',    label: 'Layanan',      icon: Wrench },
       { path: '/portfolio',  label: 'Portfolio',    icon: Image },
@@ -31,6 +30,14 @@ const NAV = [
       { path: '/pesan', label: 'Pesan', icon: MessageSquare, badge: 'contact' },
     ],
   },
+  // ─── TAMBAHAN BARU: Grup Sistem ──────────────────────────
+  {
+    group: 'Sistem',
+    items: [
+      { path: '/settings', label: 'Pengaturan Web', icon: Settings },
+    ],
+  },
+  // ─────────────────────────────────────────────────────────
 ];
 
 export default function Sidebar({ unread = {}, collapsed, onToggle }) {
@@ -89,7 +96,6 @@ export default function Sidebar({ unread = {}, collapsed, onToggle }) {
                         {isActive && <ChevronRight size={13} className="opacity-60" />}
                       </>
                     )}
-                    {/* Dot for collapsed + unread */}
                     {collapsed && count > 0 && (
                       <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-crimson-500" />
                     )}

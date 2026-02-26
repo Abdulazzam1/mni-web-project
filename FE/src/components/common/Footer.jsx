@@ -1,18 +1,19 @@
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Instagram, Linkedin, Facebook } from 'lucide-react';
-import { COMPANY, NAV_LINKS } from '@/utils/constants';
-import logoMNI from '../../assets/cropped-mni-1-1.png'; // Import gambar logo
+import { NAV_LINKS } from '@/utils/constants'; // COMPANY dihapus karena kita pakai setting dinamis
+import { useSettings } from '@/contexts/SettingsContext'; // <-- IMPORT CONTEXT
+import logoMNI from '../../assets/cropped-mni-1-1.png'; 
 import styles from './Footer.module.css';
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const { settings } = useSettings();
 
   return (
     <footer className={styles.footer}>
       <div className={`container ${styles.grid}`}>
         {/* Brand */}
         <div className={styles.brand}>
-          {/* Logo teks diganti dengan logo gambar */}
           <Link to="/" className={styles.logo}>
             <img src={logoMNI} alt="Logo PT Mitra Niaga Indonesia" className={styles.logoImage} />
           </Link>
@@ -21,13 +22,14 @@ export default function Footer() {
             Mekanikal, Elektrikal dan Plumbing.
           </p>
           <div className={styles.socials}>
-            <a href={COMPANY.social.instagram} target="_blank" rel="noreferrer" aria-label="Instagram">
+            {/* DINAMIS: Link Sosial Media */}
+            <a href={settings?.social_instagram || '#'} target="_blank" rel="noreferrer" aria-label="Instagram">
               <Instagram size={18} />
             </a>
-            <a href={COMPANY.social.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn">
+            <a href={settings?.social_linkedin || '#'} target="_blank" rel="noreferrer" aria-label="LinkedIn">
               <Linkedin size={18} />
             </a>
-            <a href={COMPANY.social.facebook} target="_blank" rel="noreferrer" aria-label="Facebook">
+            <a href={settings?.social_facebook || '#'} target="_blank" rel="noreferrer" aria-label="Facebook">
               <Facebook size={18} />
             </a>
           </div>
@@ -55,34 +57,38 @@ export default function Footer() {
         {/* Kontak */}
         <div className={styles.col}>
           <h4 className={styles.colTitle}>Kontak</h4>
-          <a href={`tel:${COMPANY.phone.sales}`} className={styles.contact}>
+          <a href={`tel:${settings?.contact_sales}`} className={styles.contact}>
             <Phone size={15} />
             <div>
               <span className={styles.contactLabel}>Sales</span>
-              <span>{COMPANY.phone.sales}</span>
+              {/* DINAMIS: Nomor Sales */}
+              <span>{settings?.contact_sales}</span>
             </div>
           </a>
-          <a href={`tel:${COMPANY.phone.service}`} className={styles.contact}>
+          <a href={`tel:${settings?.contact_service}`} className={styles.contact}>
             <Phone size={15} />
             <div>
               <span className={styles.contactLabel}>Service</span>
-              <span>{COMPANY.phone.service}</span>
+              {/* DINAMIS: Nomor Service */}
+              <span>{settings?.contact_service}</span>
             </div>
           </a>
-          <a href={`mailto:${COMPANY.email}`} className={styles.contact}>
+          <a href={`mailto:${settings?.contact_email}`} className={styles.contact}>
             <Mail size={15} />
-            <span>{COMPANY.email}</span>
+            {/* DINAMIS: Email */}
+            <span>{settings?.contact_email}</span>
           </a>
           <div className={styles.contact}>
             <MapPin size={15} />
-            <span>{COMPANY.address}</span>
+            {/* DINAMIS: Alamat */}
+            <span>{settings?.contact_address}</span>
           </div>
         </div>
       </div>
 
       <div className={styles.bottom}>
         <div className="container">
-          <p>© {year} {COMPANY.name}. Hak cipta dilindungi undang-undang.</p>
+          <p>© {year} PT. Mitra Niaga Indonesia. Hak cipta dilindungi undang-undang.</p>
         </div>
       </div>
     </footer>

@@ -4,13 +4,16 @@ import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import SEOMeta from '@/components/common/SEOMeta';
 import RFQForm from '@/components/contact/RFQForm';
 import { submitContact } from '@/services/contactService';
-import { COMPANY } from '@/utils/constants';
+import { useSettings } from '@/contexts/SettingsContext'; // <-- IMPORT CONTEXT
 import styles from './ContactPage.module.css';
 
 export default function ContactPage() {
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(false);
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
+  
+  // Panggil data pengaturan dari Context
+  const { settings, loadingSettings } = useSettings();
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -25,6 +28,9 @@ export default function ContactPage() {
       setLoading(false);
     }
   };
+
+  if (loadingSettings) return <div className="spinner" style={{ marginTop: '10rem' }} />;
+  if (!settings) return null;
 
   return (
     <>
@@ -50,35 +56,40 @@ export default function ContactPage() {
                   <div className={styles.iconBox}><Phone size={20} /></div>
                   <div>
                     <span className={styles.label}>Sales</span>
-                    <a href={`tel:${COMPANY.phone.sales}`}>{COMPANY.phone.sales}</a>
+                    {/* DINAMIS: Nomor Sales */}
+                    <a href={`tel:${settings.contact_sales}`}>{settings.contact_sales}</a>
                   </div>
                 </div>
                 <div className={styles.contactItem}>
                   <div className={styles.iconBox}><Phone size={20} /></div>
                   <div>
                     <span className={styles.label}>Service / Maintenance</span>
-                    <a href={`tel:${COMPANY.phone.service}`}>{COMPANY.phone.service}</a>
+                    {/* DINAMIS: Nomor Service */}
+                    <a href={`tel:${settings.contact_service}`}>{settings.contact_service}</a>
                   </div>
                 </div>
                 <div className={styles.contactItem}>
                   <div className={styles.iconBox}><Mail size={20} /></div>
                   <div>
                     <span className={styles.label}>Email</span>
-                    <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
+                    {/* DINAMIS: Email */}
+                    <a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a>
                   </div>
                 </div>
                 <div className={styles.contactItem}>
                   <div className={styles.iconBox}><MapPin size={20} /></div>
                   <div>
                     <span className={styles.label}>Alamat</span>
-                    <span>{COMPANY.address}</span>
+                    {/* DINAMIS: Alamat */}
+                    <span>{settings.contact_address}</span>
                   </div>
                 </div>
                 <div className={styles.contactItem}>
                   <div className={styles.iconBox}><Clock size={20} /></div>
                   <div>
                     <span className={styles.label}>Jam Operasional</span>
-                    <span>Senin – Sabtu: 08.00 – 17.00 WIB</span>
+                    {/* DINAMIS: Jam Operasional */}
+                    <span>{settings.operational_hours}</span>
                   </div>
                 </div>
               </div>

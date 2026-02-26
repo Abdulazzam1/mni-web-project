@@ -21,6 +21,7 @@ const bannerRoutes = require('./routes/banner');
 // ─── IMPORT RUTE ADMIN & AUTH BARU ───────────────────────────
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin/index');
+const settingsRoutes = require('./routes/settings');
 // ─────────────────────────────────────────────────────────────
 
 const app = express();
@@ -93,7 +94,7 @@ app.use('/api/testimonials', testimonialRoutes);
 // ─── MOUNT RUTE BANNER (Masuk ke dalam apiLimiter) ───────────
 app.use('/api/banner', bannerRoutes);
 // ─────────────────────────────────────────────────────────────
-
+app.use('/api/settings', settingsRoutes);
 app.use('/api/contact', contactLimiter, contactRoutes);
 app.use('/api/rfq', contactLimiter, rfqRoutes);
 
