@@ -32,9 +32,8 @@ const bannerController = {
         return res.status(400).json({ error: 'File gambar wajib diunggah' });
       }
 
-      // AKAR MASALAH FIX: Database menyimpan path yang sinkron dengan Express static
-      // Karena Express melayani folder misc lewat rute /uploads, kita simpan /uploads/namafile
-      const image_url = `/uploads/${req.file.filename}`;
+      // PERBAIKAN: Memasukkan 'misc' ke dalam URL agar sinkron dengan rute global uploads
+      const image_url = `/uploads/misc/${req.file.filename}`;
 
       // 2. Konversi is_active dari String ke Boolean (karena FormData mengirim string)
       const isActiveBool = is_active === 'true' || is_active === true;
@@ -57,8 +56,8 @@ const bannerController = {
       const { id } = req.params;
       const { title, is_active, existing_url } = req.body;
       
-      // Jika ada file baru, gunakan yang baru. Jika tidak, gunakan url lama.
-      const image_url = req.file ? `/uploads/${req.file.filename}` : existing_url;
+      // PERBAIKAN: Jika ada file baru, pastikan rutenya menggunakan /uploads/misc/
+      const image_url = req.file ? `/uploads/misc/${req.file.filename}` : existing_url;
 
       // Konversi is_active ke Boolean
       const isActiveBool = is_active === 'true' || is_active === true;

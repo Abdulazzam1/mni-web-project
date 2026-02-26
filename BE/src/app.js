@@ -58,14 +58,13 @@ app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// ─── FIX AKAR MASALAH: Static Files (Mengarahkan langsung ke sub-folder misc) ───
-// Karena file fisik berada di BE/uploads/misc, kita arahkan path absolut ke sana.
-// Dengan ini, URL http://localhost:5001/uploads/gambar.jpg akan mengambil file dari folder misc.
-const uploadsMiscPath = path.resolve(__dirname, '..', 'uploads', 'misc');
-app.use('/uploads', express.static(uploadsMiscPath));
+// ─── FIX AKAR MASALAH: Static Files (Global Uploads) ──────────
+// Kita kembalikan ke folder induk 'uploads' agar semua gambar (Produk, Portfolio, dll) terbaca lagi
+const uploadsPath = path.resolve(__dirname, '..', 'uploads');
+app.use('/uploads', express.static(uploadsPath));
 
-// Log untuk validasi di terminal saat server dijalankan
-console.log('Static images (Banners) served from:', uploadsMiscPath);
+// Log untuk memastikan lokasi fisik folder saat server dijalankan
+console.log('Static images served from:', uploadsPath);
 // ─────────────────────────────────────────────────────────────
 
 // ─── Rate Limiting ────────────────────────────────────────────
