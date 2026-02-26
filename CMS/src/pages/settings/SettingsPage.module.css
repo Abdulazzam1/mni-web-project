@@ -68,7 +68,8 @@
 
 .group label {
   font-size: 0.875rem;
-  font-medium: 500;
+  /* FIX: Mengganti font-medium (invalid) menjadi font-weight */
+  font-weight: 500;
   color: #374151;
 }
 

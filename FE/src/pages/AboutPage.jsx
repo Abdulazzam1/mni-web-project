@@ -1,13 +1,7 @@
 import SEOMeta from '@/components/common/SEOMeta';
 import { useSettings } from '@/contexts/SettingsContext'; // <-- IMPORT CONTEXT
+import { imgUrl } from '@/utils/formatters'; // <-- IMPORT HELPER UNTUK GAMBAR
 import styles from './AboutPage.module.css';
-
-const values = [
-  { title: 'Kualitas', desc: 'Kami hanya menyediakan produk berstandar tinggi dengan garansi resmi.' },
-  { title: 'Integritas', desc: 'Jujur dan transparan dalam setiap aspek layanan dan penawaran kami.' },
-  { title: 'Profesional', desc: 'Tim teknisi tersertifikasi dengan pengalaman di bidang VAC dan mekanikal.' },
-  { title: 'Responsif', desc: 'Siap membantu 24/7 untuk kebutuhan darurat klien kami.' },
-];
 
 export default function AboutPage() {
   const { settings, loadingSettings } = useSettings();
@@ -15,7 +9,11 @@ export default function AboutPage() {
   // Tampilkan loading jika data dari database belum turun
   if (loadingSettings) return <div className="spinner" style={{ marginTop: '10rem' }} />;
   // Jika gagal ambil data, tampilkan fallback kosong agar tidak crash
-  if (!settings) return null; 
+  if (!settings) return null;
+
+  // DINAMIS: Mengambil data Nilai-Nilai Kami dari database
+  // Jika data di database kosong, gunakan array kosong sebagai fallback
+  const companyValues = settings.company_values || [];
 
   return (
     <>
@@ -38,7 +36,12 @@ export default function AboutPage() {
         <div className="container">
           <div className={styles.aboutGrid}>
             <div className={styles.imgSide}>
-              <img src="/about-photo.jpg" alt="Tentang MNI" onError={(e) => { e.target.src = 'https://placehold.co/600x450/0A1628/E8A020?text=PT.+MNI'; }} />
+              {/* DINAMIS: Menggunakan imgUrl() untuk mengambil gambar dari database */}
+              <img 
+                src={imgUrl(settings.about_image)} 
+                alt="Tentang MNI" 
+                onError={(e) => { e.target.src = 'https://placehold.co/600x450/0A1628/E8A020?text=PT.+MNI'; }} 
+              />
             </div>
             <div className={styles.textSide}>
               <span className="overline" style={{ color: 'var(--clr-amber)' }}>Siapa Kami</span>
@@ -101,8 +104,9 @@ export default function AboutPage() {
             <h2>Prinsip yang Memandu Kami</h2>
           </div>
           <div className="grid-4">
-            {values.map((v) => (
-              <div key={v.title} className={styles.valueCard}>
+            {/* DINAMIS: Mapping data nilai dari database (JSON) */}
+            {companyValues.map((v, idx) => (
+              <div key={idx} className={styles.valueCard}>
                 <h4>{v.title}</h4>
                 <p>{v.desc}</p>
               </div>
