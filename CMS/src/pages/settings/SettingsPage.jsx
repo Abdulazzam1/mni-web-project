@@ -252,7 +252,27 @@ export default function SettingsPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Alamat Kantor Lengkap</label>
-                <textarea className="form-control" rows="2" value={formData.contact_address} onChange={(e) => setFormData({...formData, contact_address: e.target.value})} />
+                <textarea 
+                  className="form-control" 
+                  rows="2" 
+                  value={formData.contact_address} 
+                  onChange={(e) => setFormData({...formData, contact_address: e.target.value})} 
+                />
+                
+                {/* PRATINJAU PETA DINAMIS DI CMS */}
+                <div className="mt-4">
+                  <label className="block text-sm font-medium mb-2 text-gray-500 italic">Pratinjau Lokasi Peta:</label>
+                  <div className="rounded-lg overflow-hidden border border-gray-200 bg-gray-100">
+                    <iframe
+                      title="Preview Map"
+                      width="100%"
+                      height="250"
+                      style={{ border: 0 }}
+                      loading="lazy"
+                      src={`https://www.google.com/maps?q=${encodeURIComponent(formData.contact_address || 'Jakarta')}&output=embed`}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -32,6 +32,11 @@ export default function ContactPage() {
   if (loadingSettings) return <div className="spinner" style={{ marginTop: '10rem' }} />;
   if (!settings) return null;
 
+  // DINAMIS: Membuat URL Google Maps berdasarkan alamat yang diinput di CMS
+  // Menggunakan encodeURIComponent agar karakter spesial pada alamat tidak merusak URL
+  const encodedAddress = encodeURIComponent(settings.contact_address || '');
+  const dynamicMapUrl = `https://www.google.com/maps?q=${encodedAddress}&output=embed`;
+
   return (
     <>
       <SEOMeta title="Kontak" description="Hubungi PT. Mitra Niaga Indonesia untuk informasi produk, layanan, dan penawaran." />
@@ -143,8 +148,9 @@ export default function ContactPage() {
             <div className={styles.rfqCol}>
               <RFQForm />
               <div className={styles.mapWrap}>
+                {/* DINAMIS: Menggunakan URL dinamis yang mengambil alamat dari database */}
                 <iframe
-                  src={import.meta.env.VITE_GOOGLE_MAPS_EMBED || 'https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d126920.33063316753!2d106.7793599!3d-6.2141675!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sid!2sid!4v1720000000000!5m2!1sid!2sid'}
+                  src={dynamicMapUrl}
                   width="100%"
                   height="300"
                   style={{ border: 0 }}
