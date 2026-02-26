@@ -31,11 +31,14 @@ const sendContactEmail = async ({ name, email, phone, subject, message }) => {
   });
 };
 
-const sendRFQEmail = async ({ company_name, contact_name, email, phone, product_interest, message }) => {
+// FITUR BARU: Menambahkan parameter adminEmail, 
+// namun tetap menjaga kompatibilitas 100% dengan proses bisnis lama menggunakan fallback (||)
+const sendRFQEmail = async ({ adminEmail, company_name, contact_name, email, phone, product_interest, message }) => {
   const transporter = createTransporter();
   await transporter.sendMail({
     from: `"MNI Website" <${process.env.MAIL_FROM}>`,
-    to: process.env.MAIL_TO,
+    // Jika adminEmail ada (dari database CMS), gunakan itu. Jika tidak, gunakan proses bisnis lama (.env)
+    to: adminEmail || process.env.MAIL_TO,
     replyTo: email,
     subject: `[RFQ] Permintaan Penawaran dari ${company_name}`,
     html: `
