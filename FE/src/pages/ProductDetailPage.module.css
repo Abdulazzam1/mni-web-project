@@ -1,3 +1,8 @@
+/* =========================================================================
+   ProductDetailPage.module.css
+   ========================================================================= */
+
+/* ─── FITUR STABIL (Dipertahankan sesuai permintaan) ─── */
 .hero {
   background: linear-gradient(135deg, var(--clr-navy) 0%, var(--clr-navy-lt) 100%);
   padding: 8rem 0 4rem;
@@ -25,18 +30,198 @@
   font-size: 1rem;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-}
-
 .empty {
   text-align: center;
   padding: 4rem;
   color: var(--clr-muted);
 }
 
-@media (max-width: 1100px) { .grid { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 768px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 480px)  { .grid { grid-template-columns: 1fr; } }
+/* ─── PERBAIKAN LAYOUT DETAIL PRODUK (BARU) ─── */
+
+/* 1. Jarak aman dari Navbar Hitam (Fixed Header) */
+.breadcrumb {
+  padding: 8rem 0 2rem; 
+  color: var(--clr-text-lt);
+  font-size: 0.9rem;
+}
+
+.breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--clr-text-lt);
+  transition: color var(--dur);
+}
+
+.breadcrumb a:hover {
+  color: #121212;
+}
+
+/* 2. Layout Utama: Diubah dari 4 kolom menjadi 2 kolom (Gambar & Info) */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr; 
+  gap: 4rem;
+  align-items: start;
+}
+
+/* 3. Area Gambar (Kiri) */
+.imgCol {
+  background: #ffffff;
+  border-radius: var(--radius-md, 8px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 100px; /* Membuat gambar tetap terlihat saat spesifikasi di-scroll */
+}
+
+.mainImg img {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: contain; /* Mencegah gambar melebar/gepeng seperti di screenshot */
+  border-radius: var(--radius-sm, 4px);
+}
+
+/* 4. Area Informasi & Spesifikasi (Kanan) */
+.infoCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #dc2626; /* Merah aksen MNI */
+  margin-bottom: 0.75rem;
+  display: inline-block;
+}
+
+.infoCol h1 {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  color: #121212;
+  line-height: 1.2;
+  margin-bottom: 1.25rem;
+  font-weight: 800;
+}
+
+.desc {
+  font-size: 1rem;
+  color: #4b5563;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+}
+
+/* Tabel Spesifikasi yang Elegan */
+.specs {
+  margin-bottom: 2.5rem;
+  background: #f9fafb;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.specs h3 {
+  font-size: 1.15rem;
+  color: #121212;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.specs table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.specs th, .specs td {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.specs tr:last-child th,
+.specs tr:last-child td {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.specs th {
+  width: 40%;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.specs td {
+  color: #111827;
+  font-weight: 600;
+}
+
+/* 5. Tombol Aksi yang Sejajar */
+.actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+
+/* 6. Form RFQ (Bawah) */
+.rfq {
+  margin-top: 5rem;
+  padding-top: 4rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.notFound {
+  text-align: center;
+  padding: 10rem 1rem 5rem;
+}
+
+/* ─── RESPONSIVE MOBILE ─── */
+@media (max-width: 992px) {
+  .grid {
+    gap: 2.5rem;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr; /* Berubah menjadi 1 kolom (atas-bawah) di HP */
+  }
+  
+  .imgCol {
+    position: relative;
+    top: 0;
+    padding: 1rem;
+  }
+  
+  .actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .actions a {
+    width: 100%;
+  }
+  
+  .specs {
+    padding: 1rem;
+  }
+}

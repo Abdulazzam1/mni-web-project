@@ -40,8 +40,9 @@ const getAll = async (req, res, next) => {
 
 const getBySlug = async (req, res, next) => {
   try {
+    // FIX: Mencari berdasarkan SLUG ataupun ID secara bersamaan
     const result = await query(
-      'SELECT * FROM news WHERE slug = $1 AND is_published = true',
+      'SELECT * FROM news WHERE (slug = $1 OR id::text = $1) AND is_published = true',
       [req.params.slug]
     );
     if (!result.rows.length) return sendError(res, 'Berita tidak ditemukan.', 404);
