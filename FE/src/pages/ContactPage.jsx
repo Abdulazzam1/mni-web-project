@@ -33,7 +33,6 @@ export default function ContactPage() {
   if (!settings) return null;
 
   // DINAMIS: Membuat URL Google Maps berdasarkan alamat yang diinput di CMS
-  // Menggunakan encodeURIComponent agar karakter spesial pada alamat tidak merusak URL
   const encodedAddress = encodeURIComponent(settings.contact_address || '');
   const dynamicMapUrl = `https://www.google.com/maps?q=${encodedAddress}&output=embed`;
 
@@ -61,16 +60,28 @@ export default function ContactPage() {
                   <div className={styles.iconBox}><Phone size={20} /></div>
                   <div>
                     <span className={styles.label}>Sales</span>
-                    {/* DINAMIS: Nomor Sales */}
-                    <a href={`tel:${settings.contact_sales}`}>{settings.contact_sales}</a>
+                    {/* DINAMIS: WhatsApp Sales */}
+                    <a 
+                      href={`https://wa.me/${settings.contact_sales}`} 
+                      target="_blank" 
+                      rel="noreferrer"
+                    >
+                      {settings.contact_sales}
+                    </a>
                   </div>
                 </div>
                 <div className={styles.contactItem}>
                   <div className={styles.iconBox}><Phone size={20} /></div>
                   <div>
                     <span className={styles.label}>Service / Maintenance</span>
-                    {/* DINAMIS: Nomor Service */}
-                    <a href={`tel:${settings.contact_service}`}>{settings.contact_service}</a>
+                    {/* DINAMIS: WhatsApp Service */}
+                    <a 
+                      href={`https://wa.me/${settings.contact_service}`} 
+                      target="_blank" 
+                      rel="noreferrer"
+                    >
+                      {settings.contact_service}
+                    </a>
                   </div>
                 </div>
                 <div className={styles.contactItem}>
@@ -148,7 +159,6 @@ export default function ContactPage() {
             <div className={styles.rfqCol}>
               <RFQForm />
               <div className={styles.mapWrap}>
-                {/* DINAMIS: Menggunakan URL dinamis yang mengambil alamat dari database */}
                 <iframe
                   src={dynamicMapUrl}
                   width="100%"

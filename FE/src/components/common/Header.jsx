@@ -45,10 +45,15 @@ export default function Header() {
         </nav>
 
         <div className={styles.cta}>
-          {/* NOMOR TELP OTOMATIS DARI DATABASE */}
-          <a href={`tel:${settings?.contact_sales}`} className={styles.phoneLink}>
-            <Phone size={14} />
-            {settings?.contact_sales || '(021) 1234-5678'}
+          {/* NOMOR TELP OTOMATIS DARI DATABASE - DIARAHKAN KE WHATSAPP */}
+          <a 
+            href={`https://wa.me/${settings?.contact_sales}`} 
+            target="_blank" 
+            rel="noreferrer"
+            className={styles.phoneLink}
+          >
+            <Phone size={16} />
+            <span>{settings?.contact_sales}</span>
           </a>
           <Link to="/kontak" className="btn btn-primary">
             Request Penawaran
@@ -64,6 +69,7 @@ export default function Header() {
         </button>
       </div>
 
+      {/* Mobile Menu */}
       {open && (
         <div className={styles.mobileMenu}>
           {NAV_LINKS.map((link) => (
@@ -78,6 +84,19 @@ export default function Header() {
               {link.label}
             </NavLink>
           ))}
+          
+          {/* Tambahan Link WA di Mobile Menu jika diperlukan */}
+          <a 
+            href={`https://wa.me/${settings?.contact_sales}`} 
+            target="_blank" 
+            rel="noreferrer" 
+            className={styles.mobileContactLink}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '1rem', color: 'inherit' }}
+          >
+            <Phone size={18} />
+            <span>{settings?.contact_sales}</span>
+          </a>
+
           <Link to="/kontak" className={`btn btn-primary ${styles.mobileBtn}`}>
             Request Penawaran
           </Link>

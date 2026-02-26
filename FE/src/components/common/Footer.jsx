@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Instagram, Linkedin, Facebook } from 'lucide-react';
-import { NAV_LINKS } from '@/utils/constants'; // COMPANY dihapus karena kita pakai setting dinamis
-import { useSettings } from '@/contexts/SettingsContext'; // <-- IMPORT CONTEXT
+import { NAV_LINKS } from '@/utils/constants'; 
+import { useSettings } from '@/contexts/SettingsContext'; 
 import logoMNI from '../../assets/cropped-mni-1-1.png'; 
 import styles from './Footer.module.css';
 
@@ -22,11 +22,10 @@ export default function Footer() {
             Mekanikal, Elektrikal dan Plumbing.
           </p>
           <div className={styles.socials}>
-            {/* DINAMIS: Link Sosial Media */}
             <a href={settings?.social_instagram || '#'} target="_blank" rel="noreferrer" aria-label="Instagram">
               <Instagram size={18} />
             </a>
-            <a href={settings?.social_linkedin || '#'} target="_blank" rel="noreferrer" aria-label="LinkedIn">
+            <a href={settings?.social_linkedin || '#'} target="_blank" rel="noreferrer" aria-label="Linkedin">
               <Linkedin size={18} />
             </a>
             <a href={settings?.social_facebook || '#'} target="_blank" rel="noreferrer" aria-label="Facebook">
@@ -35,52 +34,65 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Navigation */}
+        {/* Quick Links */}
         <div className={styles.col}>
-          <h4 className={styles.colTitle}>Navigasi</h4>
-          {NAV_LINKS.map((l) => (
-            <Link key={l.path} to={l.path} className={styles.link}>
-              {l.label}
-            </Link>
-          ))}
+          <h4 className={styles.colTitle}>Tautan</h4>
+          <div className={styles.links}>
+            {NAV_LINKS.map((link) => (
+              <Link key={link.path} to={link.path} className={styles.link}>
+                {link.label}
+              </Link>
+            ))}
+          </div>
         </div>
 
-        {/* Layanan */}
+        {/* Layanan Populer */}
         <div className={styles.col}>
           <h4 className={styles.colTitle}>Layanan</h4>
-          <Link to="/layanan" className={styles.link}>Preventive Maintenance</Link>
-          <Link to="/layanan" className={styles.link}>Perbaikan AC</Link>
+          <Link to="/layanan" className={styles.link}>Pengadaan Unit AC</Link>
           <Link to="/layanan" className={styles.link}>Instalasi AC</Link>
           <Link to="/layanan" className={styles.link}>Maintenance Genset</Link>
         </div>
 
-        {/* Kontak */}
+        {/* Kontak - Diperbarui ke WhatsApp */}
         <div className={styles.col}>
           <h4 className={styles.colTitle}>Kontak</h4>
-          <a href={`tel:${settings?.contact_sales}`} className={styles.contact}>
+          
+          {/* Link WhatsApp Sales */}
+          <a 
+            href={`https://wa.me/${settings?.contact_sales}`} 
+            className={styles.contact} 
+            target="_blank" 
+            rel="noreferrer"
+          >
             <Phone size={15} />
             <div>
               <span className={styles.contactLabel}>Sales</span>
-              {/* DINAMIS: Nomor Sales */}
               <span>{settings?.contact_sales}</span>
             </div>
           </a>
-          <a href={`tel:${settings?.contact_service}`} className={styles.contact}>
+
+          {/* Link WhatsApp Service */}
+          <a 
+            href={`https://wa.me/${settings?.contact_service}`} 
+            className={styles.contact} 
+            target="_blank" 
+            rel="noreferrer"
+          >
             <Phone size={15} />
             <div>
               <span className={styles.contactLabel}>Service</span>
-              {/* DINAMIS: Nomor Service */}
               <span>{settings?.contact_service}</span>
             </div>
           </a>
+
           <a href={`mailto:${settings?.contact_email}`} className={styles.contact}>
             <Mail size={15} />
-            {/* DINAMIS: Email */}
             <span>{settings?.contact_email}</span>
           </a>
+          
           <div className={styles.contact}>
             <MapPin size={15} />
-            {/* DINAMIS: Alamat */}
             <span>{settings?.contact_address}</span>
           </div>
         </div>
