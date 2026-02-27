@@ -37,17 +37,22 @@ export default function InformationPage() {
 
       <section className="section">
         <div className="container">
-          {/* Filter tabs */}
-          <div className={styles.tabs}>
-            {CATEGORIES.map((c) => (
-              <button
-                key={c.value}
-                className={`${styles.tab} ${cat === c.value ? styles.active : ''}`}
-                onClick={() => setCat(c.value)}
-              >
-                {c.label}
-              </button>
-            ))}
+          
+          {/* FITUR BARU: Wrapper untuk memberikan Hint dan Efek Gradasi */}
+          <div className={styles.tabsWrapper}>
+            <span className={styles.scrollHint}>Geser kategori ➔</span>
+            
+            <div className={styles.tabs}>
+              {CATEGORIES.map((c) => (
+                <button
+                  key={c.value}
+                  className={`${styles.tab} ${cat === c.value ? styles.active : ''}`}
+                  onClick={() => setCat(c.value)}
+                >
+                  {c.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {loading ? (

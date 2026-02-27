@@ -42,3 +42,22 @@
   flex-shrink: 0;
   flex-wrap: wrap;
 }
+
+@media (max-width: 640px) {
+  .inner {
+    flex-direction: column; /* Ubah orientasi menjadi vertikal */
+    align-items: flex-start; /* Teks rata kiri */
+    gap: 1.5rem;
+  }
+
+  .actions {
+    width: 100%; /* Wadah tombol mengambil lebar penuh */
+    flex-direction: column; /* Tombol atas-bawah, bukan samping-samping */
+  }
+
+  /* Memaksa tombol untuk membentang penuh di layar HP agar mudah diklik */
+  .actions > a {
+    width: 100%;
+    justify-content: center;
+  }
+}

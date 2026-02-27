@@ -161,7 +161,37 @@
 }
 
 @media (max-width: 640px) {
-  .statsWrap { grid-template-columns: 1fr 1fr; }
-  .stat { padding: 1.25rem; }
-  .statNum { font-size: 1.75rem; }
+  .hero {
+    padding-block: 5.5rem 4rem; /* Kurangi padding atas/bawah agar tidak terlalu kosong di HP */
+  }
+
+  .actions {
+    flex-direction: column; /* Tumpuk tombol hero ke bawah di HP */
+    width: 100%;
+  }
+
+  .actions > a {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Perbaikan Grid Statistik yang mepet */
+  .statsWrap {
+    grid-template-columns: 1fr 1fr;
+    width: 100%; /* Pastikan tidak melebihi layar */
+    margin-top: 1rem; 
+  }
+
+  .stat { 
+    padding: 1rem 0.5rem; /* Kurangi padding kiri-kanan agar teks punya ruang */
+  }
+
+  .statNum { 
+    font-size: 1.5rem; /* Perkecil sedikit angka agar tidak berdesakan */
+  }
+  
+  .statLabel {
+    font-size: 0.65rem; /* Perkecil sedikit label panjang seperti 'Layanan Darurat' */
+    line-height: 1.3;
+  }
 }

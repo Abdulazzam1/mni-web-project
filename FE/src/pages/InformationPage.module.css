@@ -17,14 +17,49 @@
 .hero h1 { font-size: clamp(2rem, 4vw, 3rem); color: var(--clr-white); margin-bottom: 0.75rem; }
 .hero p { color: rgba(255,255,255,0.65); }
 
+/* --- WADAH PEMBUNGKUS UX BARU --- */
+.tabsWrapper {
+  position: relative;
+  margin-bottom: 2.5rem;
+}
+
+/* Hint Teks Khusus Mobile (Disembunyikan di Desktop) */
+.scrollHint {
+  display: none;
+}
+
+/* --- WADAH TAB --- */
 .tabs {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 2.5rem;
   border-bottom: 2px solid var(--clr-border);
   padding-bottom: 0.75rem;
+  
+  overflow-x: auto; 
+  -webkit-overflow-scrolling: touch; 
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  
+  padding-right: 1.5rem; 
+  
+  /* UX: Memunculkan scrollbar yang tipis dan elegan */
+  scrollbar-width: thin;
+  scrollbar-color: var(--clr-border) transparent;
 }
 
+/* Kustomisasi Scrollbar (Chrome/Safari) */
+.tabs::-webkit-scrollbar {
+  height: 3px;
+}
+.tabs::-webkit-scrollbar-track {
+  background: transparent;
+}
+.tabs::-webkit-scrollbar-thumb {
+  background: var(--clr-border);
+  border-radius: 4px;
+}
+
+/* --- TOMBOL TAB --- */
 .tab {
   font-family: var(--font-display);
   font-size: 0.875rem;
@@ -33,6 +68,10 @@
   border-radius: 99px;
   color: var(--clr-text-lt);
   transition: all var(--dur);
+  
+  white-space: nowrap; 
+  flex-shrink: 0; 
+  scroll-snap-align: start;
 }
 
 .tab:hover { color: var(--clr-navy); }
@@ -42,6 +81,7 @@
   color: var(--clr-white);
 }
 
+/* --- KARTU BERITA --- */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -109,6 +149,7 @@
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -119,5 +160,37 @@
   line-height: 1.6;
 }
 
+/* --- MEDIA QUERIES UNTUK MOBILE UX --- */
 @media (max-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
+
+@media (max-width: 640px) { 
+  /* Tampilkan Teks Hint dengan Animasi Berkedip (Pulse) */
+  .scrollHint {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--clr-muted);
+    text-align: right;
+    margin-bottom: 0.5rem;
+    font-style: italic;
+    animation: pulse 2s infinite;
+  }
+  
+  /* Efek Gradasi Pudar (Fade) di Ujung Kanan Tab */
+  .tabsWrapper::after {
+    content: '';
+    position: absolute;
+    top: 1.5rem; /* Menurunkan gradasi agar tidak menutupi teks hint */
+    right: 0;
+    bottom: 0;
+    width: 35px;
+    background: linear-gradient(to right, transparent, var(--clr-white));
+    pointer-events: none;
+  }
+}
+
 @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
