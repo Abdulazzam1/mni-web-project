@@ -1,5 +1,5 @@
 ﻿const router = require('express').Router();
-const ctrl = require('../controllers/serviceController');
+const ctrl = require('../controllers/Servicecontroller');
 
 router.get('/', ctrl.getAll);
 router.get('/:slug', ctrl.getBySlug);
