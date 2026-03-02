@@ -3,7 +3,19 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    // 👇 PLUGIN KUSTOM: Menghapus localhost:5001 saat Build (Hanya aktif di VPS) 👇
+    {
+      name: 'auto-replace-localhost-cms',
+      apply: 'build', 
+      transform(code, id) {
+        if (id.endsWith('.jsx') || id.endsWith('.js') || id.endsWith('.ts') || id.endsWith('.tsx')) {
+          return code.replace(/http:\/\/localhost:5001/g, '');
+        }
+      }
+    }
+  ],
   resolve: {
     alias: { '@': path.resolve(__dirname, 'src') },
   },
