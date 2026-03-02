@@ -32,26 +32,30 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
 
-// ─── CORS UPDATE UNTUK CMS (5174) & FE (5173) ────────────────
+// ─── CORS UPDATE UNTUK CMS & FE (Dinamis & Preflight Fix) ────
 app.use(cors({
   origin: function (origin, callback) {
-    const allowedOrigins = [
-      'http://localhost:5173', 
-      'http://localhost:5174'
-    ];
-    if (process.env.CORS_ORIGIN) {
-      allowedOrigins.push(process.env.CORS_ORIGIN);
+    // 1. Izinkan Postman (tanpa origin) atau localhost (FE/CMS lokal)
+    if (!origin || origin.startsWith('http://localhost')) {
+      return callback(null, true);
     }
     
-    // Izinkan jika origin terdaftar, atau jika tidak ada origin (misal dari Postman/Server-to-Server)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+    // 2. Izinkan semua subdomain dari domain produksi (termasuk cms.)
+    if (origin.includes('myrasindo.com') || origin.includes('mitraniagaindonesia.co.id')) {
+      return callback(null, true);
     }
+
+    // 3. Izinkan custom env jika ada
+    if (process.env.CORS_ORIGIN && origin === process.env.CORS_ORIGIN) {
+      return callback(null, true);
+    }
+
+    callback(new Error('Not allowed by CORS'));
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // OPTIONS wajib ada untuk preflight check browser
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true, // Wajib diaktifkan jika menggunakan token/header authorization
+  optionsSuccessStatus: 200 // Membantu browser merespons preflight dengan status 200 OK
 }));
 // ─────────────────────────────────────────────────────────────
 
