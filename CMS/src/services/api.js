@@ -1,11 +1,15 @@
 import axios from 'axios';
 
+// ─── PURE RELATIVE PATH ───────────────────────────────────────
+// Di Lokal  : Ditangkap oleh Vite Proxy (diteruskan ke 5005)
+// Di VPS    : Ditangkap oleh Nginx Proxy (diteruskan ke 5005)
+// Di Testing: Mudah di-mock oleh MSW atau interceptor
 const api = axios.create({
-  // Paksa ke port 5001 agar sinkron dengan BE MNI
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5001/api',
+  baseURL: '/api', 
   timeout: 20000,
   headers: { 'Content-Type': 'application/json' },
 });
+// ──────────────────────────────────────────────────────────────
 
 // Request: sertakan token jika ada
 api.interceptors.request.use((config) => {
@@ -18,7 +22,6 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res,
   (err) => {
-    // Tambahkan pengecekan agar tidak loop redirect saat testing
     if (err.response?.status === 401 && !window.location.href.includes('/login')) {
       localStorage.removeItem('mni_token');
       localStorage.removeItem('mni_user');

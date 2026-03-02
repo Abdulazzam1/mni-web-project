@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../services/api'; 
 
 const Banner = () => {
   const [banners, setBanners] = useState([]);
@@ -12,8 +12,7 @@ const Banner = () => {
   // Fungsi untuk mengambil data banner dari Backend
   const fetchBanners = async () => {
     try {
-      // Sesuaikan URL jika port backend Anda berbeda
-      const response = await axios.get('http://localhost:5001/api/banner'); 
+      const response = await api.get('/banner'); 
       setBanners(response.data);
     } catch (error) {
       console.error('Gagal mengambil data banner:', error);
@@ -39,7 +38,7 @@ const Banner = () => {
     formData.append('is_active', true); // Default: langsung tayang
 
     try {
-      const response = await axios.post('http://localhost:5001/api/banner', formData, {
+      const response = await api.post('/banner', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -75,7 +74,7 @@ const Banner = () => {
   // Fungsi untuk menyalakan/mematikan banner
   const handleToggleStatus = async (banner) => {
     try {
-      await axios.put(`http://localhost:5001/api/banner/${banner.id}`, {
+      await api.put(`/banner/${banner.id}`, {
         title: banner.title,
         is_active: !banner.is_active
       });
@@ -89,7 +88,7 @@ const Banner = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Yakin ingin menghapus banner ini?')) {
       try {
-        await axios.delete(`http://localhost:5001/api/banner/${id}`);
+        await api.delete(`/banner/${id}`);
         await fetchBanners(); // Refresh tabel
       } catch (error) {
         console.error('Gagal menghapus banner:', error);
@@ -156,7 +155,7 @@ const Banner = () => {
                 <tr key={banner.id} className="border-b hover:bg-gray-50 transition-colors">
                   <td className="p-4">
                     <img 
-                      src={`http://localhost:5001${banner.image_url}`} 
+                      src={banner.image_url} 
                       alt={banner.title} 
                       className="h-20 w-40 object-cover rounded shadow-sm border"
                       onError={(e) => { e.target.src = '/placeholder.jpg' }} 
