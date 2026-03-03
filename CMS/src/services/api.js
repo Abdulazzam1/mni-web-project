@@ -2,16 +2,17 @@ import axios from 'axios';
 
 /**
  * ─── DYNAMIC BASE URL ─────────────────────────────────────────
- * 1. Lokal (npm run dev) : Menggunakan '/api' (Vite Proxy ke 5001/5005).
+ * 1. Lokal (npm run dev) : Menggunakan '/api' (Vite Proxy).
  * 2. VPS (Domain Utama) : Menggunakan '/api' (Nginx Proxy).
- * 3. VPS (Subdomain CMS): Menggunakan URL Absolut ke Domain Utama agar 
- * tidak terjadi 404 pada domain cms.
+ * 3. VPS (Subdomain CMS): Menggunakan URL Absolut HTTPS ke Domain Utama
+ * agar terintegrasi dengan SSL Let's Encrypt yang sudah aktif.
  * ──────────────────────────────────────────────────────────────
  */
 const getBaseURL = () => {
   // Jika diakses via subdomain cms di VPS
   if (window.location.hostname.startsWith('cms.')) {
-    return 'http://mitraniagaindonesia.myrasindo.com/api';
+    // Diubah ke HTTPS untuk menghindari Mixed Content Error setelah instalasi SSL
+    return 'https://mitraniagaindonesia.myrasindo.com/api';
   }
   // Default menggunakan relative path (Lokal & Production Utama)
   return '/api';
