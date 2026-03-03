@@ -72,20 +72,23 @@ app.use('/uploads', express.static(uploadsPath));
 console.log('Static images served from:', uploadsPath);
 // ─────────────────────────────────────────────────────────────
 
-// ─── Rate Limiting ────────────────────────────────────────────
+// ─── Rate Limiting (REVISI 3: DILONGGARKAN AGAR CMS STABIL) ──
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  windowMs: 15 * 60 * 1000, // 15 menit
+  // Menggunakan env variable jika ada, jika tidak default ke 1000 (Standar CMS Enterprise)
+  max: parseInt(process.env.API_RATE_LIMIT, 10) || 1000, 
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: 'Terlalu banyak request, coba lagi nanti.' },
 });
 
 const contactLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10,
+  windowMs: 60 * 60 * 1000, // 1 jam
+  // Dinaikkan menjadi 30 agar proses testing RFQ/Kontak oleh admin tidak mudah terblokir
+  max: parseInt(process.env.CONTACT_RATE_LIMIT, 10) || 30, 
   message: { success: false, message: 'Terlalu banyak pengiriman form, coba lagi dalam 1 jam.' },
 });
+// ─────────────────────────────────────────────────────────────
 
 // ─── Routes ──────────────────────────────────────────────────
 app.use('/api', apiLimiter);
