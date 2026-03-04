@@ -1,7 +1,6 @@
 const { query } = require('../config/db');
 
 const settingsController = {
-  // GET: Ambil data pengaturan (Hanya akan mengembalikan baris id = 1)
   getSettings: async (req, res) => {
     try {
       const result = await query('SELECT * FROM company_settings WHERE id = 1');
@@ -15,7 +14,6 @@ const settingsController = {
     }
   },
 
-  // PUT: Update data pengaturan
   updateSettings: async (req, res) => {
     try {
       const {
@@ -23,15 +21,14 @@ const settingsController = {
         stats_projects, stats_clients, stats_years, stats_support,
         contact_sales, contact_service, contact_email, contact_address, operational_hours,
         social_instagram, social_linkedin, social_facebook,
-        company_values // Field baru untuk Nilai-Nilai Kami
+        company_values,
+        compro_file // Mengambil URL GDrive dari body text
       } = req.body;
 
-      // Logika Penanganan Gambar: 
-      // Jika ada file baru diunggah, gunakan path relatif (tanpa /uploads/ di depan). 
-      // Jika tidak, tetap gunakan path lama dari body.
       let about_image = req.body.about_image; 
+      
+      // Menggunakan kembali logika req.file stabil bawaan Anda
       if (req.file) {
-        // Perubahan: Menghapus awalan /uploads/ agar tidak terjadi double slash di frontend
         about_image = `misc/${req.file.filename}`;
       }
 
@@ -43,6 +40,7 @@ const settingsController = {
           operational_hours = $13, social_instagram = $14, social_linkedin = $15, social_facebook = $16,
           about_image = $17, 
           company_values = $18,
+          compro_file = $19,
           updated_at = CURRENT_TIMESTAMP
         WHERE id = 1 RETURNING *`,
         [
@@ -50,9 +48,9 @@ const settingsController = {
           stats_projects, stats_clients, stats_years, stats_support,
           contact_sales, contact_service, contact_email, contact_address, operational_hours,
           social_instagram, social_linkedin, social_facebook,
-          about_image, // Value untuk kolom about_image
-          // Memastikan company_values disimpan sebagai string JSON yang valid
-          typeof company_values === 'string' ? company_values : JSON.stringify(company_values)
+          about_image, 
+          typeof company_values === 'string' ? company_values : JSON.stringify(company_values), 
+          compro_file // Menyimpan string URL Google Drive ke database
         ]
       );
 

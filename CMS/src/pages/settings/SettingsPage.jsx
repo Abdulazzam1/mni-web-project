@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getSettings, updateSettings } from '@/services/settingsService';
-import { Plus, Trash2, Upload } from 'lucide-react';
+import { Plus, Trash2, Upload, Link as LinkIcon } from 'lucide-react';
 import { imgUrl } from '@/utils/formatters';
 
 export default function SettingsPage() {
@@ -10,7 +10,8 @@ export default function SettingsPage() {
     contact_sales: '', contact_service: '', contact_email: '', contact_address: '',
     operational_hours: '', social_instagram: '', social_linkedin: '', social_facebook: '',
     about_image: '',
-    company_values: [] // State untuk editor nilai-nilai
+    compro_file: '', // Sekarang ini akan menyimpan URL Google Drive
+    company_values: []
   });
   
   const [imageFile, setImageFile] = useState(null);
@@ -28,14 +29,12 @@ export default function SettingsPage() {
       const res = await getSettings();
       const data = res.data;
       
-      // Sinkronisasi data JSON company_values dari backend
       if (typeof data.company_values === 'string') {
         data.company_values = JSON.parse(data.company_values);
       }
       
       setFormData({ ...data, company_values: data.company_values || [] });
       
-      // Set pratinjau gambar jika path tersedia di database
       if (data.about_image) {
         setImagePreview(imgUrl(data.about_image));
       }
@@ -46,7 +45,6 @@ export default function SettingsPage() {
     }
   };
 
-  // Handler Editor Nilai-Nilai
   const addValue = () => {
     setFormData({
       ...formData,
@@ -69,7 +67,7 @@ export default function SettingsPage() {
     const file = e.target.files[0];
     if (file) {
       setImageFile(file);
-      setImagePreview(URL.createObjectURL(file)); // Membuat preview lokal
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -79,32 +77,25 @@ export default function SettingsPage() {
     setStatus(null);
 
     try {
-      // FIX: Menggunakan FormData untuk mendukung pengiriman file dan JSON stringified
       const data = new FormData();
       
-      // Iterasi semua field di formData
       Object.keys(formData).forEach(key => {
         if (key === 'company_values') {
-          // Kirim array sebagai string JSON agar terbaca di backend
           data.append(key, JSON.stringify(formData[key]));
         } else if (key !== 'about_image') {
-          // Append semua field teks kecuali path image lama
-          data.append(key, formData[key]);
+          // compro_file (URL GDrive) akan otomatis masuk ke sini sebagai string biasa
+          data.append(key, formData[key] === null ? '' : formData[key]);
         }
       });
 
-      // Append file gambar baru jika user telah memilih file baru
       if (imageFile) {
         data.append('about_image', imageFile);
       } else {
-        // Jika tidak ada file baru, kirim path lama agar data di database tidak terhapus
-        data.append('about_image', formData.about_image);
+        data.append('about_image', formData.about_image || '');
       }
 
       await updateSettings(data);
       setStatus({ type: 'success', msg: 'Pengaturan berhasil diperbarui!' });
-      
-      // Refresh data untuk mensinkronkan state dengan database terbaru
       fetchData();
     } catch (err) {
       console.error("Gagal memperbarui pengaturan:", err);
@@ -120,11 +111,7 @@ export default function SettingsPage() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-navy-900">Pengaturan Website</h1>
-        <button 
-          onClick={handleSubmit}
-          className="btn btn-primary" 
-          disabled={saving}
-        >
+        <button onClick={handleSubmit} className="btn btn-primary" disabled={saving}>
           {saving ? 'Menyimpan...' : 'Simpan Perubahan'}
         </button>
       </div>
@@ -136,7 +123,6 @@ export default function SettingsPage() {
       )}
 
       <form className="grid grid-cols-1 md:grid-cols-2 gap-8" onSubmit={handleSubmit}>
-        {/* Kolom Kiri: Kontak & Gambar */}
         <div className="space-y-8">
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
             <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Informasi Kontak & Header</h2>
@@ -145,7 +131,6 @@ export default function SettingsPage() {
                 <label className="block text-sm font-medium mb-1">No. Telp Sales</label>
                 <input type="text" className="form-control" value={formData.contact_sales} onChange={(e) => setFormData({...formData, contact_sales: e.target.value})} />
               </div>
-              {/* FITUR BARU: Input untuk Nomor Telp Service agar bisa dikelola via CMS */}
               <div>
                 <label className="block text-sm font-medium mb-1">No. Telp Service</label>
                 <input type="text" className="form-control" value={formData.contact_service} onChange={(e) => setFormData({...formData, contact_service: e.target.value})} />
@@ -174,9 +159,30 @@ export default function SettingsPage() {
               <p className="text-[10px] text-gray-400 italic">*Direkomendasikan rasio 4:3 atau 16:9</p>
             </div>
           </div>
+
+          {/* FIX STRATEGI: Input Link Google Drive */}
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Dokumen Company Profile (Google Drive)</h2>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium mb-1">Link URL Google Drive</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <LinkIcon size={16} className="text-gray-400" />
+                </div>
+                <input 
+                  type="url" 
+                  placeholder="https://drive.google.com/file/d/..." 
+                  className="form-control pl-10" 
+                  value={formData.compro_file} 
+                  onChange={(e) => setFormData({...formData, compro_file: e.target.value})} 
+                />
+              </div>
+              <p className="text-[10px] text-gray-500 italic">*Pastikan akses link Google Drive diatur ke <strong>"Siapa saja yang memiliki link" (Anyone with the link)</strong>.</p>
+            </div>
+          </div>
+
         </div>
 
-        {/* Kolom Kanan: Statistik & Nilai-Nilai */}
         <div className="space-y-8">
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
             <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Statistik Perusahaan (About Page)</h2>
@@ -232,7 +238,6 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* Visi, Misi & Alamat */}
         <div className="md:col-span-2 space-y-8">
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
             <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Konten Profil & Alamat</h2>
@@ -263,8 +268,6 @@ export default function SettingsPage() {
                   value={formData.contact_address} 
                   onChange={(e) => setFormData({...formData, contact_address: e.target.value})} 
                 />
-                
-                {/* PRATINJAU PETA DINAMIS DI CMS */}
                 <div className="mt-4">
                   <label className="block text-sm font-medium mb-2 text-gray-500 italic">Pratinjau Lokasi Peta:</label>
                   <div className="rounded-lg overflow-hidden border border-gray-200 bg-gray-100">

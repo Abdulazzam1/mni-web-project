@@ -1,18 +1,14 @@
 import SEOMeta from '@/components/common/SEOMeta';
-import { useSettings } from '@/contexts/SettingsContext'; // <-- IMPORT CONTEXT
-import { imgUrl } from '@/utils/formatters'; // <-- IMPORT HELPER UNTUK GAMBAR
+import { useSettings } from '@/contexts/SettingsContext';
+import { imgUrl } from '@/utils/formatters';
 import styles from './AboutPage.module.css';
 
 export default function AboutPage() {
   const { settings, loadingSettings } = useSettings();
 
-  // Tampilkan loading jika data dari database belum turun
   if (loadingSettings) return <div className="spinner" style={{ marginTop: '10rem' }} />;
-  // Jika gagal ambil data, tampilkan fallback kosong agar tidak crash
   if (!settings) return null;
 
-  // DINAMIS: Mengambil data Nilai-Nilai Kami dari database
-  // Jika data di database kosong, gunakan array kosong sebagai fallback
   const companyValues = settings.company_values || [];
 
   return (
@@ -22,7 +18,6 @@ export default function AboutPage() {
         description="Profil PT. Mitra Niaga Indonesia - Principal Distributor Masagi, spesialis VAC, Mekanikal dan Elektrikal."
       />
 
-      {/* Page Hero */}
       <div className={styles.hero}>
         <div className="container">
           <span className={styles.overline}>Profil Perusahaan</span>
@@ -31,12 +26,10 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* About Content */}
       <section className="section">
         <div className="container">
           <div className={styles.aboutGrid}>
             <div className={styles.imgSide}>
-              {/* DINAMIS: Menggunakan imgUrl() untuk mengambil gambar dari database */}
               <img 
                 src={imgUrl(settings.about_image)} 
                 alt="Tentang MNI" 
@@ -46,10 +39,8 @@ export default function AboutPage() {
             <div className={styles.textSide}>
               <span className="overline" style={{ color: 'var(--clr-amber)' }}>Siapa Kami</span>
               
-              {/* DINAMIS: Judul About */}
               <h2>{settings.about_title}</h2>
               
-              {/* DINAMIS: Deskripsi dipecah berdasarkan simbol || yang kita buat di database */}
               {settings.about_description?.split('||').map((paragraph, idx) => (
                 <p key={idx}>{paragraph}</p>
               ))}
@@ -67,26 +58,52 @@ export default function AboutPage() {
                   </div>
                 ))}
               </div>
+
+              {/* FIX STRATEGI: Tombol Download langsung buka URL Google Drive */}
+              {settings.compro_file && (
+                <div style={{ marginTop: '2.5rem' }}>
+                  <a 
+                    href={settings.compro_file} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="btn" 
+                    style={{ 
+                      backgroundColor: 'var(--clr-amber)', 
+                      color: 'var(--clr-navy)', 
+                      display: 'inline-flex', 
+                      alignItems: 'center', 
+                      gap: '0.5rem',
+                      fontWeight: 'bold',
+                      padding: '0.8rem 1.5rem',
+                      borderRadius: '4px'
+                    }}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download Company Profile
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Vision & Mission */}
       <section className={`section section--off`}>
         <div className="container">
           <div className={styles.vmGrid}>
             <div className={styles.vmCard}>
               <div className={styles.vmIcon}>🎯</div>
               <h3>Visi</h3>
-              {/* DINAMIS: Visi */}
               <p>{settings.vision}</p>
             </div>
             <div className={styles.vmCard}>
               <div className={styles.vmIcon}>🚀</div>
               <h3>Misi</h3>
               <ul>
-                {/* DINAMIS: Misi dipecah menjadi list <li> */}
                 {settings.mission?.split('||').map((item, idx) => (
                   <li key={idx}>{item}</li>
                 ))}
@@ -96,7 +113,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Values */}
       <section className="section">
         <div className="container">
           <div className="section-header">
@@ -104,7 +120,6 @@ export default function AboutPage() {
             <h2>Prinsip yang Memandu Kami</h2>
           </div>
           <div className="grid-4">
-            {/* DINAMIS: Mapping data nilai dari database (JSON) */}
             {companyValues.map((v, idx) => (
               <div key={idx} className={styles.valueCard}>
                 <h4>{v.title}</h4>

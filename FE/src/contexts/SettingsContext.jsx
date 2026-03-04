@@ -10,8 +10,9 @@ export const SettingsProvider = ({ children }) => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        // Sesuaikan dengan port backend Anda (5001)
-        const res = await axios.get('http://localhost:5001/api/settings');
+        // FIX: Menggunakan env dinamis agar otomatis menyesuaikan Lokal vs VPS
+        const baseURL = import.meta.env.VITE_API_URL || '/api';
+        const res = await axios.get(`${baseURL}/settings`);
         setSettings(res.data);
       } catch (error) {
         console.error('Gagal memuat pengaturan web:', error);

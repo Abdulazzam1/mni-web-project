@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const settingsController = require('../controllers/settingsController');
-const upload = require('../middleware/upload'); // Gunakan middleware upload yang sudah ada
+const upload = require('../middleware/upload');
 
 router.get('/', settingsController.getSettings);
-// Tambahkan upload.single('about_image') untuk menangani file dari CMS
+
+// Kembali menggunakan upload.single karena PDF sudah tidak diunggah ke server
 router.put('/', upload.single('about_image'), settingsController.updateSettings);
 
 module.exports = router;

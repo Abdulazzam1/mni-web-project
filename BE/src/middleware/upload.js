@@ -24,11 +24,13 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+  // FIX: Menambahkan 'application/pdf' agar server bisa menerima file dokumen Compro
+  const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
   if (allowed.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Format file tidak diizinkan. Hanya JPEG, PNG, WebP, GIF.'), false);
+    // FIX: Memperbarui pesan error agar sesuai dengan format yang baru diizinkan
+    cb(new Error('Format file tidak diizinkan. Hanya JPEG, PNG, WebP, GIF, dan PDF.'), false);
   }
 };
 
