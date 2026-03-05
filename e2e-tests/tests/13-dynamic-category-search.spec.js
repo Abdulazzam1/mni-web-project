@@ -123,10 +123,13 @@ test.describe('E2E Flow: Manajemen Kategori Dinamis & Pencarian Produk', () => {
     await cmsPage.goto(`${CMS_URL}/#/kategori`);
     await cmsPage.waitForTimeout(1500);
     const catRow = cmsPage.locator('tr', { hasText: testCategoryName }).first();
+    
+    // ─── FIX: Pasang penangkap dialog SEBELUM tombol hapus diklik! ───
+    cmsPage.once('dialog', dialog => dialog.accept());
+    // ─────────────────────────────────────────────────────────────────
+    
     await catRow.locator('button[title="Hapus"]').click();
     
-    // Tangani dialog alert bawaan browser (window.confirm)
-    cmsPage.once('dialog', dialog => dialog.accept());
     await expect(catRow).not.toBeVisible({ timeout: 10000 });
     console.log('   🧹 Kategori test dihapus.');
 

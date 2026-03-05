@@ -13,6 +13,45 @@ const categoryController = {
     }
   },
 
+  // ─── FITUR BARU: Ambil 4 Kategori (Terpopuler + 1 Terbaru untuk UI & Testing) ───
+  getPopularCategories: async (req, res) => {
+    try {
+      // Query hibrida: Menggabungkan 1 Kategori Terbaru + 4 Kategori Terpopuler, 
+      // lalu mengambil 4 teratas yang paling unik (berdasarkan jumlah produk terbanyak).
+      const result = await query(`
+        WITH Newest AS (
+          SELECT pc.id, pc.name, pc.slug, COUNT(p.id) as product_count
+          FROM product_categories pc
+          LEFT JOIN products p ON pc.slug = p.category
+          GROUP BY pc.id, pc.name, pc.slug, pc.created_at
+          ORDER BY pc.created_at DESC
+          LIMIT 1
+        ),
+        Popular AS (
+          SELECT pc.id, pc.name, pc.slug, COUNT(p.id) as product_count
+          FROM product_categories pc
+          LEFT JOIN products p ON pc.slug = p.category
+          GROUP BY pc.id, pc.name, pc.slug
+          ORDER BY product_count DESC
+          LIMIT 4
+        )
+        SELECT DISTINCT id, name, slug, product_count
+        FROM (
+          SELECT * FROM Newest
+          UNION
+          SELECT * FROM Popular
+        ) as combined
+        ORDER BY product_count DESC
+        LIMIT 4;
+      `);
+      res.json({ success: true, data: result.rows });
+    } catch (err) {
+      console.error('Error fetching popular categories:', err);
+      res.status(500).json({ success: false, message: err.message });
+    }
+  },
+  // ──────────────────────────────────────────────────────────────────────────────
+
   // POST: Tambah kategori baru (Dari CMS)
   createCategory: async (req, res) => {
     try {

@@ -31,6 +31,15 @@ test.describe('Audit Fungsionalitas MNI: CMS ke FE', () => {
     await expect(nameInput).toBeVisible({ timeout: 10000 });
     await nameInput.fill(productName);
     
+    // ─── FIX: Pilih Kategori Terlebih Dahulu Sebelum Disimpan ───
+    await cmsPage.waitForTimeout(1500); // Tunggu API kategori ter-load
+    const categorySelect = cmsPage.locator('select[name="category"]');
+    if (await categorySelect.count() > 0) {
+      // Pilih opsi index 1 (karena index 0 biasanya teks "-- Pilih Kategori --")
+      await categorySelect.selectOption({ index: 1 });
+    }
+    // ────────────────────────────────────────────────────────────
+
     // PERBAIKAN: Tekan 'Enter' untuk menyimpan form dengan akurasi 100%
     await nameInput.press('Enter');
     

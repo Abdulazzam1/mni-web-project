@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import useFetch from '@/hooks/useFetch';
-import { getProducts, getCategories } from '@/services/productService'; // Import getCategories
+// FIX TAHAP 4 & PLAYWRIGHT: Import getPopularCategories sebagai pengganti getCategories
+import { getProducts, getPopularCategories } from '@/services/productService'; 
 import SEOMeta from '@/components/common/SEOMeta';
 import ProductCard from '@/components/products/ProductCard';
 import ProductFilter from '@/components/products/ProductFilter';
@@ -17,16 +18,27 @@ export default function ProductsPage() {
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Mengambil data kategori saat halaman pertama kali dimuat
+  // ─── FIX PEMBACAAN DATA KATEGORI (KEBAL INTERCEPTOR) ───
   useEffect(() => {
-    getCategories()
+    getPopularCategories()
       .then((res) => {
-        if (res.data && res.data.data) {
-          setCategories(res.data.data);
+        // Kita log ke console agar terlihat bentuk aslinya saat debugging
+        console.log("Cek Data Kategori:", res); 
+        
+        // Logika cerdas: Baca data dengan atau tanpa interceptor axios
+        const payload = res.data || res;
+        const finalData = payload.data || payload;
+
+        // Pastikan yang masuk adalah Array sebelum diset ke state
+        if (Array.isArray(finalData)) {
+          setCategories(finalData);
+        } else {
+          console.warn("Format data tidak sesuai ekspektasi:", finalData);
         }
       })
       .catch((err) => console.error('Gagal memuat kategori:', err));
   }, []);
+  // ───────────────────────────────────────────────────────
 
   // Fitur Debounce: Otomatis memicu pencarian 500ms setelah user berhenti mengetik
   useEffect(() => {
