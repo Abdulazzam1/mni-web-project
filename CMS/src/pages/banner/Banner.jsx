@@ -75,12 +75,14 @@ const Banner = () => {
   const handleToggleStatus = async (banner) => {
     try {
       await api.put(`/banner/${banner.id}`, {
-        title: banner.title,
-        is_active: !banner.is_active
+        title: banner.title || '',
+        is_active: !banner.is_active,
+        existing_url: banner.image_url // <--- PERBAIKAN: Mengirim URL gambar lama agar tidak ditolak database
       });
       await fetchBanners(); // Refresh tabel setelah diubah
     } catch (error) {
       console.error('Gagal mengubah status:', error);
+      alert('Gagal mengubah status banner. Cek console untuk detailnya.');
     }
   };
 
