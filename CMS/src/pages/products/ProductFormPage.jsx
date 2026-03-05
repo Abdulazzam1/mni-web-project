@@ -1,14 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Save, ArrowLeft, X, Plus } from 'lucide-react';
+import axios from 'axios'; // <-- TAMBAHAN: Import axios untuk memanggil API Kategori
 import * as svc from '@/services/productService';
 import ImageUpload from '@/components/ui/ImageUpload';
 import { Toggle, SectionHeader, PageSpinner } from '@/components/ui/index';
 import { useToastCtx } from '@/components/ui/Toast';
-import { getErrorMsg, slugify, PRODUCT_CATEGORIES } from '@/utils/helpers';
-import { useState } from 'react';
+import { getErrorMsg, slugify } from '@/utils/helpers'; // FIX: Menghapus PRODUCT_CATEGORIES statis
 
 export default function ProductFormPage() {
   const { id }   = useParams();
@@ -20,6 +20,16 @@ export default function ProductFormPage() {
   // State untuk gambar (bisa multiple) & specs (key-value pairs)
   const [images, setImages]   = useState([null]);
   const [specs,  setSpecs]    = useState([{ key: '', value: '' }]);
+
+  // FIX TAHAP 3: Mengambil data kategori secara dinamis dari database menggunakan useQuery
+  const { data: categories = [], isLoading: loadingCategories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const baseURL = import.meta.env.VITE_API_URL || '/api';
+      const res = await axios.get(`${baseURL}/categories`);
+      return res.data.data || [];
+    }
+  });
 
   const { data: existing, isLoading: loadingData } = useQuery({
     queryKey: ['product', id],
@@ -35,7 +45,7 @@ export default function ProductFormPage() {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      name: '', brand: '', category: 'ac', description: '',
+      name: '', brand: '', category: '', description: '', // FIX: Default category dikosongkan agar memaksa user memilih
       is_featured: false, is_active: true,
     },
   });
@@ -128,11 +138,21 @@ export default function ProductFormPage() {
               </div>
               <div>
                 <label className="label">Kategori *</label>
-                <select className="input" {...register('category', { required: true })}>
-                  {PRODUCT_CATEGORIES.map((c) => (
-                    <option key={c.value} value={c.value}>{c.label}</option>
-                  ))}
+                {/* FIX TAHAP 3: Dropdown Kategori membaca dari state useQuery */}
+                <select 
+                  className={`input ${errors.category ? 'input-error' : ''}`} 
+                  {...register('category', { required: 'Kategori wajib dipilih' })}
+                >
+                  <option value="">-- Pilih Kategori --</option>
+                  {loadingCategories ? (
+                    <option value="" disabled>Memuat data kategori...</option>
+                  ) : (
+                    categories.map((c) => (
+                      <option key={c.id} value={c.slug}>{c.name}</option>
+                    ))
+                  )}
                 </select>
+                {errors.category && <p className="form-error">{errors.category.message}</p>}
               </div>
             </div>
 

@@ -14,6 +14,9 @@ router.use('/dashboard', require('./dashboard'));
 
 // Resource routes
 router.use('/products',     require('./products'));
+// ─── FIX TAHAP 3: Mount Rute Manajemen Kategori Admin ────────
+router.use('/categories',   require('./categories'));
+// ─────────────────────────────────────────────────────────────
 router.use('/services',     require('./services'));
 router.use('/portfolio',    require('./portfolio'));
 router.use('/news',         require('./news'));

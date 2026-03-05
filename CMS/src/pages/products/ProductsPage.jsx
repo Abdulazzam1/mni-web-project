@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Pencil, Trash2, ToggleLeft, Package } from 'lucide-react';
+import { Plus, Pencil, Trash2, Package } from 'lucide-react';
+import axios from 'axios'; // <-- TAMBAHAN: Untuk fetch kategori
 import * as svc from '@/services/productService';
 import { SectionHeader, SearchInput, Badge, EmptyState, PageSpinner } from '@/components/ui/index';
 import DataTable from '@/components/ui/DataTable';
@@ -11,7 +12,6 @@ import { useConfirmCtx } from '@/components/ui/Confirm';
 import { useTable } from '@/hooks/useTable';
 import { useDebounce } from '@/hooks/useDebounce';
 import { formatDateShort, imgUrl } from '@/utils/formatters';
-import { PRODUCT_CATEGORIES } from '@/utils/helpers';
 
 export default function ProductsPage() {
   const navigate    = useNavigate();
@@ -21,6 +21,16 @@ export default function ProductsPage() {
   const { page, limit, search, setPage, setSearch } = useTable();
   const [cat, setCat] = useState('');
   const dSearch = useDebounce(search);
+
+  // FIX: Mengambil data kategori secara dinamis dari database
+  const { data: categories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const baseURL = import.meta.env.VITE_API_URL || '/api';
+      const res = await axios.get(`${baseURL}/categories`);
+      return res.data.data || [];
+    }
+  });
 
   const { data, isLoading } = useQuery({
     queryKey: ['products', page, dSearch, cat],
@@ -80,12 +90,16 @@ export default function ProductsPage() {
     {
       key: 'category',
       label: 'Kategori',
-      render: (row) => (
-        <Badge
-          label={PRODUCT_CATEGORIES.find((c) => c.value === row.category)?.label ?? row.category}
-          variant={row.category}
-        />
-      ),
+      render: (row) => {
+        // FIX: Mencari label kategori dari data dinamis
+        const found = categories.find((c) => c.slug === row.category);
+        return (
+          <Badge
+            label={found ? found.name : row.category}
+            variant={row.category}
+          />
+        );
+      },
     },
     {
       key: 'is_active',
@@ -152,14 +166,16 @@ export default function ProductsPage() {
           onChange={(v) => { setSearch(v); setPage(1); }}
           placeholder="Cari nama produk..."
         />
+        
+        {/* FIX: Dropdown Kategori sekarang dinamis dari API */}
         <select
           value={cat}
           onChange={(e) => { setCat(e.target.value); setPage(1); }}
           className="input w-auto text-sm"
         >
           <option value="">Semua Kategori</option>
-          {PRODUCT_CATEGORIES.map((c) => (
-            <option key={c.value} value={c.value}>{c.label}</option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.slug}>{c.name}</option>
           ))}
         </select>
       </div>

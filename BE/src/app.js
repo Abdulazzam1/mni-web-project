@@ -7,6 +7,9 @@ const rateLimit = require('express-rate-limit');
 
 const errorHandler = require('./middleware/errorHandler');
 const productRoutes = require('./routes/products');
+// ─── IMPORT RUTE BARU (KATEGORI) ─────────────────────────────
+const categoryRoutes = require('./routes/categories');
+// ─────────────────────────────────────────────────────────────
 const serviceRoutes = require('./routes/services');
 const portfolioRoutes = require('./routes/portfolio');
 const newsRoutes = require('./routes/news');
@@ -93,6 +96,9 @@ const contactLimiter = rateLimit({
 // ─── Routes ──────────────────────────────────────────────────
 app.use('/api', apiLimiter);
 app.use('/api/products', productRoutes);
+// ─── MOUNT RUTE KATEGORI ─────────────────────────────────────
+app.use('/api/categories', categoryRoutes);
+// ─────────────────────────────────────────────────────────────
 app.use('/api/services', serviceRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/news', newsRoutes);

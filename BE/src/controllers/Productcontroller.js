@@ -4,7 +4,8 @@ const { paginate, sendSuccess, sendError, toSlug } = require('../utils/helpers')
 const getAll = async (req, res, next) => {
   try {
     const { page, limit, offset } = paginate(req.query.page, req.query.limit);
-    const { category, featured } = req.query;
+    // FIX REVISI 1: Menambahkan ekstraksi parameter 'search' dari query URL
+    const { category, featured, search } = req.query;
 
     let conditions = ['is_active = true'];
     let params = [];
@@ -14,8 +15,16 @@ const getAll = async (req, res, next) => {
       conditions.push(`category = $${idx++}`);
       params.push(category);
     }
+    
     if (featured === 'true') {
       conditions.push(`is_featured = true`);
+    }
+
+    // FIX REVISI 1: Logika Pencarian String Dinamis (Fleksibel mencari di nama, kategori, atau brand)
+    if (search) {
+      conditions.push(`(name ILIKE $${idx} OR category ILIKE $${idx} OR brand ILIKE $${idx})`);
+      params.push(`%${search}%`);
+      idx++;
     }
 
     const where = `WHERE ${conditions.join(' AND ')}`;

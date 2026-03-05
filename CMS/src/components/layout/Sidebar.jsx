@@ -2,7 +2,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Package, Wrench, Image, Newspaper,
   MessageSquare, FileText, Star, ChevronRight, MonitorPlay,
-  Settings // <-- TAMBAHAN: Import icon Settings
+  Settings, Tags // <-- TAMBAHAN: Import icon Tags untuk Kategori
 } from 'lucide-react';
 
 const NAV = [
@@ -17,6 +17,9 @@ const NAV = [
     items: [
       { path: '/banner',     label: 'Banner & Promo', icon: MonitorPlay },
       { path: '/produk',     label: 'Produk',       icon: Package },
+      // ─── FIX TAHAP 3: Menu Manajemen Kategori Baru ────────────
+      { path: '/kategori',   label: 'Kategori',     icon: Tags },
+      // ─────────────────────────────────────────────────────────
       { path: '/layanan',    label: 'Layanan',      icon: Wrench },
       { path: '/portfolio',  label: 'Portfolio',    icon: Image },
       { path: '/berita',     label: 'Berita & Info', icon: Newspaper },

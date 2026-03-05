@@ -1,20 +1,52 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import useFetch from '@/hooks/useFetch';
-import { getProducts } from '@/services/productService';
+import { getProducts, getCategories } from '@/services/productService'; // Import getCategories
 import SEOMeta from '@/components/common/SEOMeta';
 import ProductCard from '@/components/products/ProductCard';
 import ProductFilter from '@/components/products/ProductFilter';
 import styles from './ProductsPage.module.css';
 
 export default function ProductsPage() {
-  const [category, setCategory] = useState('all');
+  // FIX TAHAP 4: State kategori diubah defaultnya menjadi string kosong '' (Semua Produk)
+  const [category, setCategory] = useState('');
+  
+  // State untuk mengambil data kategori dinamis dari Backend
+  const [categories, setCategories] = useState([]);
 
+  // State untuk fitur pencarian string
+  const [searchInput, setSearchInput] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Mengambil data kategori saat halaman pertama kali dimuat
+  useEffect(() => {
+    getCategories()
+      .then((res) => {
+        if (res.data && res.data.data) {
+          setCategories(res.data.data);
+        }
+      })
+      .catch((err) => console.error('Gagal memuat kategori:', err));
+  }, []);
+
+  // Fitur Debounce: Otomatis memicu pencarian 500ms setelah user berhenti mengetik
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      setSearchQuery(searchInput);
+    }, 500);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchInput]);
+
+  // Fungsi Fetch yang mendengarkan perubahan Kategori dan Search Query
   const fetchFn = useCallback(
-    () => getProducts({ category: category === 'all' ? undefined : category, limit: 24 }),
-    [category]
+    () => getProducts({ 
+      category: category || undefined, 
+      search: searchQuery || undefined, // Mengirim kata kunci ke backend
+      limit: 24 
+    }),
+    [category, searchQuery] 
   );
 
-  const { data, loading } = useFetch(fetchFn, [category]);
+  const { data, loading } = useFetch(fetchFn, [category, searchQuery]);
 
   return (
     <>
@@ -30,14 +62,22 @@ export default function ProductsPage() {
 
       <section className="section">
         <div className="container">
-          <ProductFilter active={category} onChange={setCategory} />
+          
+          {/* FIX TAHAP 4: Menampilkan Search Bar & Kategori Dinamis secara terpusat */}
+          <ProductFilter 
+            categories={categories}
+            active={category} 
+            onChange={setCategory} 
+            searchValue={searchInput}
+            onSearchChange={setSearchInput}
+          />
 
           {loading ? (
             <div className="spinner" />
           ) : (
             <>
               {data?.items?.length === 0 ? (
-                <p className={styles.empty}>Tidak ada produk untuk kategori ini.</p>
+                <p className={styles.empty}>Tidak ada produk yang sesuai dengan pencarian atau kategori ini.</p>
               ) : (
                 <div className={styles.grid}>
                   {data?.items?.map((p) => <ProductCard key={p.id} product={p} />)}

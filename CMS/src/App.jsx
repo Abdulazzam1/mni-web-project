@@ -12,6 +12,9 @@ import LoginPage from '@/pages/auth/LoginPage';
 import DashboardPage       from '@/pages/dashboard/DashboardPage';
 import ProductsPage        from '@/pages/products/ProductsPage';
 import ProductFormPage     from '@/pages/products/ProductFormPage';
+// ─── IMPORT BARU: Kategori Produk ───────────────────────────
+import CategoriesPage      from '@/pages/products/CategoriesPage';
+// ────────────────────────────────────────────────────────────
 import ServicesPage        from '@/pages/services/ServicesPage';
 import ServiceFormPage     from '@/pages/services/ServiceFormPage';
 import PortfolioPage       from '@/pages/portfolio/PortfolioPage';
@@ -91,6 +94,10 @@ export default function App() {
         <Route path="/produk"             element={<ProductsPage />} />
         <Route path="/produk/baru"        element={<ProductFormPage />} />
         <Route path="/produk/:id/edit"    element={<ProductFormPage />} />
+        
+        {/* ── RUTE BARU: Kategori Produk ──────────────────────── */}
+        <Route path="/kategori"           element={<CategoriesPage />} />
+        {/* ────────────────────────────────────────────────────── */}
 
         {/* Services */}
         <Route path="/layanan"            element={<ServicesPage />} />
