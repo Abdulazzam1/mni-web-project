@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getSettings, updateSettings } from '@/services/settingsService';
-import { Plus, Trash2, Upload, Link as LinkIcon } from 'lucide-react';
+import { Plus, Trash2, Upload, Link as LinkIcon, Instagram, Linkedin, Facebook } from 'lucide-react';
 import { imgUrl } from '@/utils/formatters';
 
 export default function SettingsPage() {
@@ -83,7 +83,6 @@ export default function SettingsPage() {
         if (key === 'company_values') {
           data.append(key, JSON.stringify(formData[key]));
         } else if (key !== 'about_image') {
-          // compro_file (URL GDrive) akan otomatis masuk ke sini sebagai string biasa
           data.append(key, formData[key] === null ? '' : formData[key]);
         }
       });
@@ -146,6 +145,26 @@ export default function SettingsPage() {
             </div>
           </div>
 
+          {/* PERBAIKAN: BLOK SOSIAL MEDIA YANG SEBELUMNYA HILANG */}
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Sosial Media</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium mb-1"><Instagram size={16} /> URL Instagram</label>
+                <input type="text" placeholder="instagram.com/mitraniaga" className="form-control" value={formData.social_instagram} onChange={(e) => setFormData({...formData, social_instagram: e.target.value})} />
+              </div>
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium mb-1"><Linkedin size={16} /> URL LinkedIn</label>
+                <input type="text" placeholder="linkedin.com/company/mni" className="form-control" value={formData.social_linkedin} onChange={(e) => setFormData({...formData, social_linkedin: e.target.value})} />
+              </div>
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium mb-1"><Facebook size={16} /> URL Facebook</label>
+                <input type="text" placeholder="facebook.com/mitraniaga" className="form-control" value={formData.social_facebook} onChange={(e) => setFormData({...formData, social_facebook: e.target.value})} />
+              </div>
+            </div>
+          </div>
+          {/* ----------------------------------------------------- */}
+
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
             <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Gambar Tentang Kami</h2>
             <div className="flex flex-col items-center gap-4">
@@ -160,7 +179,6 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* FIX STRATEGI: Input Link Google Drive */}
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
             <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Dokumen Company Profile (Google Drive)</h2>
             <div className="space-y-2">
@@ -180,7 +198,6 @@ export default function SettingsPage() {
               <p className="text-[10px] text-gray-500 italic">*Pastikan akses link Google Drive diatur ke <strong>"Siapa saja yang memiliki link" (Anyone with the link)</strong>.</p>
             </div>
           </div>
-
         </div>
 
         <div className="space-y-8">
@@ -277,7 +294,7 @@ export default function SettingsPage() {
                       height="250"
                       style={{ border: 0 }}
                       loading="lazy"
-                      src={`https://www.google.com/maps?q=${encodeURIComponent(formData.contact_address || 'Jakarta')}&output=embed`}
+                      src={`https://maps.google.com/maps?q=${encodeURIComponent(formData.contact_address || 'Jakarta')}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
                     />
                   </div>
                 </div>
