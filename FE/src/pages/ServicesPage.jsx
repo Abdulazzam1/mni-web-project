@@ -1,7 +1,11 @@
+// FE/src/pages/ServicesPage.jsx
+// REVISI TAHAP 2: Tampilkan gambar pertama (images[0]) dari JSONB column
+// menggunakan imgUrl() sebagai thumbnail di atas setiap card layanan.
+
 import { Link } from 'react-router-dom';
 import useFetch from '@/hooks/useFetch';
 import { getServices } from '@/services/serviceService';
-import { getTestimonials } from '@/services/testimonialService';
+import { imgUrl } from '@/utils/formatters';          // ← digunakan untuk thumbnail
 import SEOMeta from '@/components/common/SEOMeta';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
 import styles from './ServicesPage.module.css';
@@ -11,7 +15,10 @@ export default function ServicesPage() {
 
   return (
     <>
-      <SEOMeta title="Layanan" description="Layanan MNI: Preventive Maintenance AC, Perbaikan, Instalasi, dan Maintenance Genset." />
+      <SEOMeta
+        title="Layanan"
+        description="Layanan MNI: Preventive Maintenance AC, Perbaikan, Instalasi, dan Maintenance Genset."
+      />
 
       <div className={styles.hero}>
         <div className="container">
@@ -29,6 +36,19 @@ export default function ServicesPage() {
             <div className={styles.grid}>
               {(services || []).map((svc) => (
                 <div key={svc.id} className={styles.card}>
+
+                  {/* REVISI TAHAP 2: thumbnail gambar pertama dari JSONB images */}
+                  {svc.images?.[0] && (
+                    <div className={styles.cardThumb}>
+                      <img
+                        src={imgUrl(svc.images[0])}
+                        alt={svc.name}
+                        loading="lazy"
+                        onError={(e) => { e.target.parentElement.style.display = 'none'; }}
+                      />
+                    </div>
+                  )}
+
                   <div className={styles.cardHeader}>
                     <h3>{svc.name}</h3>
                   </div>
