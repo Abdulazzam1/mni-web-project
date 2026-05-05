@@ -1,7 +1,12 @@
+// FE/src/components/home/HeroSection.jsx
+// REVISI TAHAP 1: Stats (Proyek, Klien, Tahun, Support) sekarang DINAMIS
+// dari useSettings() — identik dengan cara AboutPage.jsx membaca settings.
+
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import { COMPANY } from '@/utils/constants';
 import { waUrl } from '@/utils/formatters';
+import { useSettings } from '@/contexts/SettingsContext'; // ← TAMBAHAN
 import styles from './HeroSection.module.css';
 
 const highlights = [
@@ -11,6 +16,18 @@ const highlights = [
 ];
 
 export default function HeroSection() {
+  // Sama persis dengan pola di AboutPage.jsx
+  const { settings } = useSettings();
+
+  // Mapping field settings ke label tampilan — fallback ke nilai statis
+  // jika settings belum dimuat agar tidak terjadi layout shift
+  const stats = [
+    { num: settings?.stats_projects || '500+', label: 'Proyek Selesai' },
+    { num: settings?.stats_years    || '15+',  label: 'Tahun Pengalaman' },
+    { num: settings?.stats_clients  || '200+', label: 'Klien Aktif' },
+    { num: settings?.stats_support  || '24/7', label: 'Layanan Darurat' },
+  ];
+
   return (
     <section className={styles.hero}>
       {/* Background geometric pattern */}
@@ -25,11 +42,11 @@ export default function HeroSection() {
           <h1 className={styles.heading}>
             Solusi Terpadu<br />
             <em>VAC, Mekanikal</em><br />
-            & Elektrikal
+            &amp; Elektrikal
           </h1>
           <p className={styles.sub}>
             PT. Mitra Niaga Indonesia menyediakan produk AC, Genset, Lampu LED,
-            dan layanan maintenance profesional untuk gedung komersial & industri.
+            dan layanan maintenance profesional untuk gedung komersial &amp; industri.
           </p>
 
           <ul className={styles.bullets}>
@@ -57,14 +74,9 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Stats card */}
+        {/* Stats Card — DINAMIS dari settings */}
         <div className={styles.statsWrap}>
-          {[
-            { num: '500+', label: 'Proyek Selesai' },
-            { num: '15+', label: 'Tahun Pengalaman' },
-            { num: '200+', label: 'Klien Aktif' },
-            { num: '24/7', label: 'Layanan Darurat' },
-          ].map((s) => (
+          {stats.map((s) => (
             <div key={s.label} className={styles.stat}>
               <span className={styles.statNum}>{s.num}</span>
               <span className={styles.statLabel}>{s.label}</span>
