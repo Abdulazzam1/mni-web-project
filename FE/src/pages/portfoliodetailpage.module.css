@@ -1,0 +1,214 @@
+/* FE/src/pages/PortfolioDetailPage.module.css */
+
+.hero {
+  background: linear-gradient(135deg, var(--clr-navy) 0%, var(--clr-navy-lt) 100%);
+  padding: 7rem 0 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+  margin-bottom: 1.25rem;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.back:hover { color: var(--clr-amber); }
+
+.overline {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--clr-amber);
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+
+.hero h1 {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  color: var(--clr-white);
+  max-width: 700px;
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  position: relative;
+}
+
+.metaRow span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.65);
+}
+
+/* Galeri */
+.mainImg {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  aspect-ratio: 16/8;
+  box-shadow: var(--shadow-lg);
+}
+
+.mainImg img { width: 100%; height: 100%; object-fit: cover; }
+
+.thumbRow {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.thumb {
+  flex-shrink: 0;
+  width: 140px;
+  height: 90px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+.thumb:hover img { transform: scale(1.06); }
+
+/* Layout 2 kolom */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 3rem;
+  align-items: start;
+}
+
+.block { margin-bottom: 2.5rem; }
+
+.block h2 {
+  font-size: 1.2rem;
+  color: var(--clr-navy);
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 2px solid var(--clr-amber);
+  display: inline-block;
+}
+
+.block p {
+  font-size: 0.95rem;
+  color: var(--clr-text-lt);
+  line-height: 1.8;
+}
+
+/* Rich text dari react-quill */
+.richContent {
+  font-size: 0.95rem;
+  color: var(--clr-text-lt);
+  line-height: 1.8;
+}
+
+.richContent h1, .richContent h2, .richContent h3 {
+  color: var(--clr-navy);
+  margin: 1.25rem 0 0.5rem;
+}
+
+.richContent p   { margin-bottom: 0.85rem; }
+.richContent ul, .richContent ol {
+  padding-left: 1.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.richContent li  { margin-bottom: 0.3rem; }
+.richContent strong { font-weight: 700; color: var(--clr-navy); }
+.richContent em  { font-style: italic; }
+.richContent a   { color: var(--clr-amber-dk); text-decoration: underline; }
+
+/* Sidebar */
+
+
+.infoCard {
+  background: var(--clr-white);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 6rem;
+}
+
+.infoCard h3 {
+  font-size: 1rem;
+  color: var(--clr-navy);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--clr-border);
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--clr-surface);
+  font-size: 0.875rem;
+}
+
+.infoLabel {
+  color: var(--clr-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.infoVal { color: var(--clr-text); text-align: right; }
+
+.infoAction {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--clr-border);
+  text-align: center;
+}
+
+.infoAction p { font-size: 0.85rem; color: var(--clr-text-lt); margin-bottom: 0.85rem; }
+
+/* Not found */
+.notFound {
+  text-align: center;
+  padding: 8rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .layout { grid-template-columns: 1fr; }
+  .infoCard { position: static; }
+}
+
+@media (max-width: 640px) {
+  .mainImg { aspect-ratio: 4/3; }
+  .thumbRow .thumb { width: 110px; height: 70px; }
+}
