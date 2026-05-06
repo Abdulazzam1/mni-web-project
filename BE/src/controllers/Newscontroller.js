@@ -1,24 +1,33 @@
+// BE/src/controllers/Newscontroller.js
+// REVISI TAHAP 6: Tambah filter show_on_home=true di getAll (public endpoint)
+// Semua fungsi lain (getBySlug, create) tidak berubah.
+
 const { query } = require('../config/db');
 const { paginate, sendSuccess, sendError, toSlug } = require('../utils/helpers');
 
 const getAll = async (req, res, next) => {
   try {
     const { page, limit, offset } = paginate(req.query.page, req.query.limit);
-    const { category } = req.query;
+    const { category, show_on_home } = req.query;   // ← TAMBAHAN
 
     let conditions = ['is_published = true'];
     let params = [];
 
     if (category) {
-      conditions.push(`category = $1`);
       params.push(category);
+      conditions.push(`category = $${params.length}`);
+    }
+
+    // TAHAP 6: filter untuk Beranda
+    if (show_on_home === 'true') {
+      conditions.push('show_on_home = true');
     }
 
     const where = `WHERE ${conditions.join(' AND ')}`;
 
     const [dataRes, countRes] = await Promise.all([
       query(
-        `SELECT id, title, slug, category, excerpt, cover_image, author, published_at
+        `SELECT id, title, slug, category, excerpt, cover_image, author, published_at, show_on_home
          FROM news ${where}
          ORDER BY published_at DESC
          LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
@@ -40,7 +49,6 @@ const getAll = async (req, res, next) => {
 
 const getBySlug = async (req, res, next) => {
   try {
-    // FIX: Mencari berdasarkan SLUG ataupun ID secara bersamaan
     const result = await query(
       'SELECT * FROM news WHERE (slug = $1 OR id::text = $1) AND is_published = true',
       [req.params.slug]

@@ -1,8 +1,13 @@
-import { useEffect } from 'react';
+// CMS/src/pages/news/NewsFormPage.jsx
+// REVISI TAHAP 6: Tambah toggle "Tampilkan di Beranda" (show_on_home).
+// FIX (sama dengan PortfolioFormPage): useEffect sekarang menggunakan
+// hasInitialized ref agar form tidak direset saat background refetch.
+
+import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Save, ArrowLeft } from 'lucide-react';
+import { Save, ArrowLeft, Home } from 'lucide-react';
 import * as svc from '@/services/newsService';
 import ImageUpload from '@/components/ui/ImageUpload';
 import { Toggle, SectionHeader, PageSpinner } from '@/components/ui/index';
@@ -16,32 +21,55 @@ export default function NewsFormPage() {
   const toast    = useToastCtx();
   const qc       = useQueryClient();
 
+  // FIX: sama dengan PortfolioFormPage — form hanya di-init sekali
+  const hasInitialized = useRef(false);
+
   const { data: existing, isLoading } = useQuery({
-    queryKey: ['news-item', id],
-    queryFn:  () => svc.getOne(id).then((r) => r.data.data),
-    enabled:  isEdit,
+    queryKey:             ['news-item', id],
+    queryFn:              () => svc.getOne(id).then((r) => r.data.data),
+    enabled:              isEdit,
+    staleTime:            Infinity,         // tidak ada background refetch saat form terbuka
+    gcTime:               0,               // hapus cache setelah unmount
+    refetchOnWindowFocus: false,
   });
 
   const {
-    register, handleSubmit, setValue, watch,
+    register, handleSubmit, reset, setValue, watch,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      title: '', category: 'berita', excerpt: '', content: '',
-      cover_image: '', author: 'Admin MNI', is_published: false,
+      title:        '',
+      category:     'berita',
+      excerpt:      '',
+      content:      '',
+      cover_image:  '',
+      author:       'Admin MNI',
+      is_published: false,
+      show_on_home: false,   // ← TAMBAHAN TAHAP 6
     },
   });
 
+  // FIX: hanya init sekali, gunakan reset() bukan setValue per-field
   useEffect(() => {
-    if (existing) {
-      Object.entries(existing).forEach(([k, v]) => setValue(k, v));
-    }
-  }, [existing, setValue]);
+    if (!existing || hasInitialized.current) return;
+    hasInitialized.current = true;
+    reset({
+      title:        existing.title        ?? '',
+      category:     existing.category     ?? 'berita',
+      excerpt:      existing.excerpt      ?? '',
+      content:      existing.content      ?? '',
+      cover_image:  existing.cover_image  ?? '',
+      author:       existing.author       ?? 'Admin MNI',
+      is_published: existing.is_published ?? false,
+      show_on_home: existing.show_on_home ?? false,   // ← TAMBAHAN
+    });
+  }, [existing, reset]);
 
   const mut = useMutation({
     mutationFn: (payload) => isEdit ? svc.update(id, payload) : svc.create(payload),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['news'] });
+      if (isEdit) qc.removeQueries({ queryKey: ['news-item', id] }); // FIX cache stale
       toast.success(isEdit ? 'Artikel diperbarui.' : 'Artikel berhasil diterbitkan.');
       navigate('/berita');
     },
@@ -63,11 +91,10 @@ export default function NewsFormPage() {
             <button type="button" onClick={() => navigate('/berita')} className="btn btn-outline">
               <ArrowLeft size={15} /> Batal
             </button>
-            <button type="submit" disabled={isSubmitting} className="btn btn-primary">
-              {isSubmitting
+            <button type="submit" disabled={isSubmitting || mut.isPending} className="btn btn-primary">
+              {(isSubmitting || mut.isPending)
                 ? <span className="w-4 h-4 border-2 border-navy-900/20 border-t-navy-900 rounded-full animate-spin" />
-                : <Save size={15} />
-              }
+                : <Save size={15} />}
               {watch('is_published') ? 'Terbitkan' : 'Simpan Draft'}
             </button>
           </div>
@@ -75,14 +102,16 @@ export default function NewsFormPage() {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main content */}
+        {/* ── Konten Utama ── */}
         <div className="lg:col-span-2 space-y-5">
           <div className="card p-5 space-y-4">
             <div>
               <label className="label">Judul Artikel *</label>
-              <input className={`input ${errors.title ? 'input-error' : ''}`}
+              <input
+                className={`input ${errors.title ? 'input-error' : ''}`}
                 placeholder="Tulis judul yang menarik..."
-                {...register('title', { required: 'Judul wajib diisi' })} />
+                {...register('title', { required: 'Judul wajib diisi' })}
+              />
               {errors.title && <p className="form-error">{errors.title.message}</p>}
             </div>
 
@@ -103,9 +132,12 @@ export default function NewsFormPage() {
 
             <div>
               <label className="label">Kutipan / Excerpt</label>
-              <textarea className="input" rows={2}
+              <textarea
+                className="input"
+                rows={2}
                 placeholder="Ringkasan singkat artikel (tampil di list berita)..."
-                {...register('excerpt')} />
+                {...register('excerpt')}
+              />
             </div>
 
             <div>
@@ -121,11 +153,11 @@ export default function NewsFormPage() {
           </div>
         </div>
 
-        {/* Sidebar */}
+        {/* ── Sidebar ── */}
         <div className="space-y-5">
-          {/* Publish */}
+          {/* Status Publish */}
           <div className="card p-5 space-y-4">
-            <h3 className="font-display font-semibold text-obsidian-700 text-sm">Status Artikel</h3>
+            <h3 className="font-display font-semibold text-obsidian-700 text-sm">Penerbitan</h3>
 
             <div className="flex items-center justify-between py-2.5 px-3 rounded-lg border border-surface-border">
               <div>
@@ -139,6 +171,23 @@ export default function NewsFormPage() {
               <Toggle
                 checked={watch('is_published')}
                 onChange={(v) => setValue('is_published', v)}
+              />
+            </div>
+
+            {/* ── TAHAP 6: Toggle Tampilkan di Beranda ── */}
+            <div className="flex items-center justify-between py-2.5 px-3 rounded-lg border border-amber-200 bg-amber-50">
+              <div>
+                <p className="text-sm font-semibold text-obsidian-700 flex items-center gap-1.5">
+                  <Home size={13} className="text-amber-600" />
+                  Tampilkan di Beranda
+                </p>
+                <p className="text-xs text-obsidian-400 mt-0.5">
+                  Artikel ini muncul di section informasi Beranda
+                </p>
+              </div>
+              <Toggle
+                checked={watch('show_on_home')}
+                onChange={(v) => setValue('show_on_home', v)}
               />
             </div>
           </div>
