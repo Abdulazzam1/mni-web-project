@@ -1,6 +1,14 @@
+// CMS/src/pages/settings/SettingsPage.jsx
+// REVISI TAHAP 5: Tambahkan Dynamic Form "Contact Persons" —
+// admin bisa add/edit/hapus daftar {name, role, wa} secara dinamis.
+// Semua kode existing (company_values, sosmed, dll) dipertahankan.
+
 import { useState, useEffect } from 'react';
 import { getSettings, updateSettings } from '@/services/settingsService';
-import { Plus, Trash2, Upload, Link as LinkIcon, Instagram, Linkedin, Facebook } from 'lucide-react';
+import {
+  Plus, Trash2, Upload, Link as LinkIcon,
+  Instagram, Linkedin, Facebook, Phone,
+} from 'lucide-react';
 import { imgUrl } from '@/utils/formatters';
 
 export default function SettingsPage() {
@@ -8,67 +16,76 @@ export default function SettingsPage() {
     about_title: '', about_description: '', vision: '', mission: '',
     stats_projects: '', stats_clients: '', stats_years: '', stats_support: '',
     contact_sales: '', contact_service: '', contact_email: '', contact_address: '',
-    operational_hours: '', social_instagram: '', social_linkedin: '', social_facebook: '',
+    operational_hours: '',
+    social_instagram: '', social_linkedin: '', social_facebook: '',
     about_image: '',
-    compro_file: '', // Sekarang ini akan menyimpan URL Google Drive
-    company_values: []
+    compro_file: '',
+    company_values:   [],
+    contact_persons:  [],   // ← TAHAP 5
   });
-  
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [status, setStatus] = useState(null);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const [imageFile,    setImageFile]    = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [loading,      setLoading]      = useState(true);
+  const [saving,       setSaving]       = useState(false);
+  const [status,       setStatus]       = useState(null);
+
+  useEffect(() => { fetchData(); }, []);
 
   const fetchData = async () => {
     try {
-      const res = await getSettings();
+      const res  = await getSettings();
       const data = res.data;
-      
-      if (typeof data.company_values === 'string') {
-        data.company_values = JSON.parse(data.company_values);
-      }
-      
-      setFormData({ ...data, company_values: data.company_values || [] });
-      
-      if (data.about_image) {
-        setImagePreview(imgUrl(data.about_image));
-      }
+
+      // Parse JSONB fields
+      if (typeof data.company_values === 'string')
+        data.company_values = JSON.parse(data.company_values || '[]');
+      if (typeof data.contact_persons === 'string')
+        data.contact_persons = JSON.parse(data.contact_persons || '[]');
+
+      setFormData({
+        ...data,
+        company_values:  data.company_values  || [],
+        contact_persons: data.contact_persons || [],
+      });
+
+      if (data.about_image) setImagePreview(imgUrl(data.about_image));
     } catch (err) {
-      console.error("Gagal mengambil data pengaturan", err);
+      console.error('Gagal mengambil data pengaturan', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const addValue = () => {
-    setFormData({
-      ...formData,
-      company_values: [...formData.company_values, { title: '', desc: '' }]
+  /* ── company_values helpers ── */
+  const addValue = () =>
+    setFormData((f) => ({ ...f, company_values: [...f.company_values, { title: '', desc: '' }] }));
+  const removeValue = (i) =>
+    setFormData((f) => ({ ...f, company_values: f.company_values.filter((_, idx) => idx !== i) }));
+  const changeValue = (i, field, val) => {
+    setFormData((f) => {
+      const arr = [...f.company_values];
+      arr[i] = { ...arr[i], [field]: val };
+      return { ...f, company_values: arr };
     });
   };
 
-  const removeValue = (index) => {
-    const newValues = formData.company_values.filter((_, i) => i !== index);
-    setFormData({ ...formData, company_values: newValues });
-  };
-
-  const handleValueChange = (index, field, value) => {
-    const newValues = [...formData.company_values];
-    newValues[index][field] = value;
-    setFormData({ ...formData, company_values: newValues });
+  /* ── TAHAP 5: contact_persons helpers ── */
+  const addPerson = () =>
+    setFormData((f) => ({ ...f, contact_persons: [...f.contact_persons, { name: '', role: '', wa: '' }] }));
+  const removePerson = (i) =>
+    setFormData((f) => ({ ...f, contact_persons: f.contact_persons.filter((_, idx) => idx !== i) }));
+  const changePerson = (i, field, val) => {
+    setFormData((f) => {
+      const arr = [...f.contact_persons];
+      arr[i] = { ...arr[i], [field]: val };
+      return { ...f, contact_persons: arr };
+    });
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
+    if (file) { setImageFile(file); setImagePreview(URL.createObjectURL(file)); }
   };
 
   const handleSubmit = async (e) => {
@@ -77,27 +94,27 @@ export default function SettingsPage() {
     setStatus(null);
 
     try {
-      const data = new FormData();
-      
-      Object.keys(formData).forEach(key => {
-        if (key === 'company_values') {
-          data.append(key, JSON.stringify(formData[key]));
+      const fd = new FormData();
+
+      Object.keys(formData).forEach((key) => {
+        if (key === 'company_values' || key === 'contact_persons') {
+          fd.append(key, JSON.stringify(formData[key]));
         } else if (key !== 'about_image') {
-          data.append(key, formData[key] === null ? '' : formData[key]);
+          fd.append(key, formData[key] === null ? '' : formData[key]);
         }
       });
 
       if (imageFile) {
-        data.append('about_image', imageFile);
+        fd.append('about_image', imageFile);
       } else {
-        data.append('about_image', formData.about_image || '');
+        fd.append('about_image', formData.about_image || '');
       }
 
-      await updateSettings(data);
+      await updateSettings(fd);
       setStatus({ type: 'success', msg: 'Pengaturan berhasil diperbarui!' });
       fetchData();
     } catch (err) {
-      console.error("Gagal memperbarui pengaturan:", err);
+      console.error('Gagal memperbarui pengaturan:', err);
       setStatus({ type: 'error', msg: 'Gagal memperbarui pengaturan.' });
     } finally {
       setSaving(false);
@@ -122,182 +139,254 @@ export default function SettingsPage() {
       )}
 
       <form className="grid grid-cols-1 md:grid-cols-2 gap-8" onSubmit={handleSubmit}>
+
+        {/* ══════════ KOLOM KIRI ══════════ */}
         <div className="space-y-8">
+
+          {/* Kontak Dasar */}
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-            <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Informasi Kontak & Header</h2>
+            <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Informasi Kontak Utama</h2>
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">No. Telp Sales</label>
-                <input type="text" className="form-control" value={formData.contact_sales} onChange={(e) => setFormData({...formData, contact_sales: e.target.value})} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">No. Telp Service</label>
-                <input type="text" className="form-control" value={formData.contact_service} onChange={(e) => setFormData({...formData, contact_service: e.target.value})} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Email</label>
-                <input type="email" className="form-control" value={formData.contact_email} onChange={(e) => setFormData({...formData, contact_email: e.target.value})} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Jam Operasional</label>
-                <input type="text" className="form-control" value={formData.operational_hours} onChange={(e) => setFormData({...formData, operational_hours: e.target.value})} />
-              </div>
+              {[
+                ['contact_sales',    'No. Telp Sales (Fallback)'],
+                ['contact_service',  'No. Telp Service (Fallback)'],
+                ['contact_email',    'Email'],
+                ['operational_hours','Jam Operasional'],
+              ].map(([key, label]) => (
+                <div key={key}>
+                  <label className="block text-sm font-medium mb-1">{label}</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={formData[key]}
+                    onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* PERBAIKAN: BLOK SOSIAL MEDIA YANG SEBELUMNYA HILANG */}
+          {/* ─── TAHAP 5: Contact Persons ─── */}
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <h2 className="text-lg font-semibold mb-1 border-b pb-2 text-navy-800">
+              Daftar Kontak Person (Footer)
+            </h2>
+            <p className="text-xs text-gray-500 mb-4">
+              Tampil di Footer website. Format nomor WA: <code>628xxxxxxx</code> (tanpa +).
+            </p>
+            <div className="space-y-3">
+              {formData.contact_persons.map((person, idx) => (
+                <div key={idx} className="relative p-3 border border-gray-200 rounded-md bg-gray-50">
+                  <button
+                    type="button"
+                    onClick={() => removePerson(idx)}
+                    className="absolute top-2 right-2 text-red-400 hover:text-red-600"
+                    title="Hapus"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                  <div className="grid grid-cols-1 gap-2 pr-6">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-xs font-semibold mb-0.5 text-gray-600">Nama</label>
+                        <input
+                          type="text"
+                          placeholder="Budi Santoso"
+                          className="form-control text-sm"
+                          value={person.name}
+                          onChange={(e) => changePerson(idx, 'name', e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold mb-0.5 text-gray-600">Jabatan</label>
+                        <input
+                          type="text"
+                          placeholder="Sales Manager"
+                          className="form-control text-sm"
+                          value={person.role}
+                          onChange={(e) => changePerson(idx, 'role', e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold mb-0.5 text-gray-600">
+                        <Phone size={11} className="inline mr-1" />Nomor WhatsApp (628xxx)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="6281234567890"
+                        className="form-control text-sm"
+                        value={person.wa}
+                        onChange={(e) => changePerson(idx, 'wa', e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addPerson}
+                className="btn btn-outline w-full text-sm flex items-center justify-center gap-2 border-dashed border-2"
+              >
+                <Plus size={14} /> Tambah Kontak Person
+              </button>
+            </div>
+          </div>
+          {/* ─────────────────────────────── */}
+
+          {/* Sosial Media */}
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
             <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Sosial Media</h2>
             <div className="space-y-4">
-              <div>
-                <label className="flex items-center gap-2 text-sm font-medium mb-1"><Instagram size={16} /> URL Instagram</label>
-                <input type="text" placeholder="instagram.com/mitraniaga" className="form-control" value={formData.social_instagram} onChange={(e) => setFormData({...formData, social_instagram: e.target.value})} />
-              </div>
-              <div>
-                <label className="flex items-center gap-2 text-sm font-medium mb-1"><Linkedin size={16} /> URL LinkedIn</label>
-                <input type="text" placeholder="linkedin.com/company/mni" className="form-control" value={formData.social_linkedin} onChange={(e) => setFormData({...formData, social_linkedin: e.target.value})} />
-              </div>
-              <div>
-                <label className="flex items-center gap-2 text-sm font-medium mb-1"><Facebook size={16} /> URL Facebook</label>
-                <input type="text" placeholder="facebook.com/mitraniaga" className="form-control" value={formData.social_facebook} onChange={(e) => setFormData({...formData, social_facebook: e.target.value})} />
-              </div>
+              {[
+                ['social_instagram', 'Instagram', <Instagram size={16} />],
+                ['social_linkedin',  'LinkedIn',  <Linkedin  size={16} />],
+                ['social_facebook',  'Facebook',  <Facebook  size={16} />],
+              ].map(([key, label, icon]) => (
+                <div key={key}>
+                  <label className="flex items-center gap-2 text-sm font-medium mb-1">{icon} URL {label}</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={formData[key]}
+                    onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
+                  />
+                </div>
+              ))}
             </div>
           </div>
-          {/* ----------------------------------------------------- */}
 
+          {/* Gambar About */}
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
             <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Gambar Tentang Kami</h2>
             <div className="flex flex-col items-center gap-4">
               {imagePreview && (
                 <img src={imagePreview} alt="Preview" className="w-full max-h-64 object-cover rounded border border-gray-200 shadow-inner" />
               )}
-              <label className="btn btn-outline w-full flex items-center justify-center gap-2 cursor-pointer transition-all">
+              <label className="btn btn-outline w-full flex items-center justify-center gap-2 cursor-pointer">
                 <Upload size={16} /> Pilih Gambar Baru
                 <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
               </label>
-              <p className="text-[10px] text-gray-400 italic">*Direkomendasikan rasio 4:3 atau 16:9</p>
+              <p className="text-[10px] text-gray-400 italic">*Rasio 4:3 atau 16:9 direkomendasikan</p>
             </div>
           </div>
 
+          {/* Company Profile */}
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-            <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Dokumen Company Profile (Google Drive)</h2>
+            <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Company Profile (Google Drive)</h2>
             <div className="space-y-2">
               <label className="block text-sm font-medium mb-1">Link URL Google Drive</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <LinkIcon size={16} className="text-gray-400" />
                 </div>
-                <input 
-                  type="url" 
-                  placeholder="https://drive.google.com/file/d/..." 
-                  className="form-control pl-10" 
-                  value={formData.compro_file} 
-                  onChange={(e) => setFormData({...formData, compro_file: e.target.value})} 
+                <input
+                  type="url"
+                  placeholder="https://drive.google.com/file/d/..."
+                  className="form-control pl-10"
+                  value={formData.compro_file}
+                  onChange={(e) => setFormData({ ...formData, compro_file: e.target.value })}
                 />
               </div>
-              <p className="text-[10px] text-gray-500 italic">*Pastikan akses link Google Drive diatur ke <strong>"Siapa saja yang memiliki link" (Anyone with the link)</strong>.</p>
+              <p className="text-[10px] text-gray-500 italic">*Atur akses ke <strong>"Anyone with the link"</strong>.</p>
             </div>
           </div>
         </div>
 
+        {/* ══════════ KOLOM KANAN ══════════ */}
         <div className="space-y-8">
+
+          {/* Statistik */}
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-            <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Statistik Perusahaan (About Page)</h2>
+            <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Statistik Perusahaan</h2>
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Total Proyek</label>
-                <input type="text" className="form-control" value={formData.stats_projects} onChange={(e) => setFormData({...formData, stats_projects: e.target.value})} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Total Klien</label>
-                <input type="text" className="form-control" value={formData.stats_clients} onChange={(e) => setFormData({...formData, stats_clients: e.target.value})} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Tahun Pengalaman</label>
-                <input type="text" className="form-control" value={formData.stats_years} onChange={(e) => setFormData({...formData, stats_years: e.target.value})} />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Support Layanan</label>
-                <input type="text" className="form-control" value={formData.stats_support} onChange={(e) => setFormData({...formData, stats_support: e.target.value})} />
-              </div>
+              {[
+                ['stats_projects', 'Total Proyek'],
+                ['stats_clients',  'Total Klien'],
+                ['stats_years',    'Tahun Pengalaman'],
+                ['stats_support',  'Support Layanan'],
+              ].map(([key, label]) => (
+                <div key={key}>
+                  <label className="block text-sm font-medium mb-1">{label}</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={formData[key]}
+                    onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
+          {/* Nilai Perusahaan */}
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-            <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Prinsip & Nilai Kami</h2>
+            <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Prinsip &amp; Nilai Kami</h2>
             <div className="space-y-4">
               {formData.company_values.map((val, idx) => (
                 <div key={idx} className="p-3 border border-gray-200 rounded-md relative bg-gray-50/50">
-                  <button type="button" onClick={() => removeValue(idx)} className="absolute top-2 right-2 text-red-500 hover:text-red-700 transition-colors">
+                  <button type="button" onClick={() => removeValue(idx)} className="absolute top-2 right-2 text-red-500 hover:text-red-700">
                     <Trash2 size={14} />
                   </button>
                   <div className="space-y-2">
-                    <input 
-                      placeholder="Judul Nilai (Contoh: Integritas)" 
-                      className="form-control text-sm font-bold bg-white" 
-                      value={val.title} 
-                      onChange={(e) => handleValueChange(idx, 'title', e.target.value)} 
+                    <input
+                      placeholder="Judul Nilai"
+                      className="form-control text-sm font-bold bg-white"
+                      value={val.title}
+                      onChange={(e) => changeValue(idx, 'title', e.target.value)}
                     />
-                    <textarea 
-                      placeholder="Deskripsi singkat mengenai prinsip ini" 
-                      className="form-control text-sm bg-white" 
-                      rows="2" 
-                      value={val.desc} 
-                      onChange={(e) => handleValueChange(idx, 'desc', e.target.value)} 
+                    <textarea
+                      placeholder="Deskripsi singkat"
+                      className="form-control text-sm bg-white"
+                      rows="2"
+                      value={val.desc}
+                      onChange={(e) => changeValue(idx, 'desc', e.target.value)}
                     />
                   </div>
                 </div>
               ))}
-              <button type="button" onClick={addValue} className="btn btn-outline w-full text-sm flex items-center justify-center gap-2 border-dashed border-2">
+              <button
+                type="button"
+                onClick={addValue}
+                className="btn btn-outline w-full text-sm flex items-center justify-center gap-2 border-dashed border-2"
+              >
                 <Plus size={14} /> Tambah Nilai Baru
               </button>
             </div>
           </div>
         </div>
 
+        {/* ══════════ FULL WIDTH ══════════ */}
         <div className="md:col-span-2 space-y-8">
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-            <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Konten Profil & Alamat</h2>
+            <h2 className="text-lg font-semibold mb-4 border-b pb-2 text-navy-800">Konten Profil &amp; Alamat</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Judul Utama Profil</label>
-                <input type="text" className="form-control" value={formData.about_title} onChange={(e) => setFormData({...formData, about_title: e.target.value})} />
+                <input type="text" className="form-control" value={formData.about_title}
+                  onChange={(e) => setFormData({ ...formData, about_title: e.target.value })} />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Deskripsi Tentang Kami (Gunakan || untuk paragraf baru)</label>
-                <textarea className="form-control" rows="5" value={formData.about_description} onChange={(e) => setFormData({...formData, about_description: e.target.value})} />
+                <label className="block text-sm font-medium mb-1">Deskripsi (|| = paragraf baru)</label>
+                <textarea className="form-control" rows="5" value={formData.about_description}
+                  onChange={(e) => setFormData({ ...formData, about_description: e.target.value })} />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Visi</label>
-                  <textarea className="form-control" rows="3" value={formData.vision} onChange={(e) => setFormData({...formData, vision: e.target.value})} />
+                  <textarea className="form-control" rows="3" value={formData.vision}
+                    onChange={(e) => setFormData({ ...formData, vision: e.target.value })} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Misi (Gunakan || untuk poin baru)</label>
-                  <textarea className="form-control" rows="3" value={formData.mission} onChange={(e) => setFormData({...formData, mission: e.target.value})} />
+                  <label className="block text-sm font-medium mb-1">Misi (|| = poin baru)</label>
+                  <textarea className="form-control" rows="3" value={formData.mission}
+                    onChange={(e) => setFormData({ ...formData, mission: e.target.value })} />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Alamat Kantor Lengkap</label>
-                <textarea 
-                  className="form-control" 
-                  rows="2" 
-                  value={formData.contact_address} 
-                  onChange={(e) => setFormData({...formData, contact_address: e.target.value})} 
-                />
-                <div className="mt-4">
-                  <label className="block text-sm font-medium mb-2 text-gray-500 italic">Pratinjau Lokasi Peta:</label>
-                  <div className="rounded-lg overflow-hidden border border-gray-200 bg-gray-100">
-                    <iframe
-                      title="Preview Map"
-                      width="100%"
-                      height="250"
-                      style={{ border: 0 }}
-                      loading="lazy"
-                      src={`https://maps.google.com/maps?q=${encodeURIComponent(formData.contact_address || 'Jakarta')}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
-                    />
-                  </div>
-                </div>
+                <textarea className="form-control" rows="2" value={formData.contact_address}
+                  onChange={(e) => setFormData({ ...formData, contact_address: e.target.value })} />
               </div>
             </div>
           </div>
